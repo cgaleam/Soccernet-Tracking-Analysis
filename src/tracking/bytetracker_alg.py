@@ -9,6 +9,10 @@ from boxmot import BYTETracker
 base_path   = r"path/to/SoccerNet/tracking/train/SNMOT-060/"
 img_folder  = os.path.join(base_path, "img1")
 det_path    = os.path.join(base_path, "det/det.txt")
+sequence    = os.path.basename(base_path.rstrip('/\\'))
+results_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'results', 'bytetracker')
+os.makedirs(results_dir, exist_ok=True)
+result_path = os.path.join(results_dir, f"{sequence}.txt")
 
 # Parámetros detección balón
 BALL_MAX_AREA  = 2000   # área máxima en píxeles para considerar balón
@@ -64,6 +68,7 @@ tracker = BYTETracker()
 # BUCLE PRINCIPAL
 # ─────────────────────────────────────────
 images = sorted(os.listdir(img_folder))
+result_file = open(result_path, 'w')
 
 for i, img_name in enumerate(images, start=1):
     frame = cv2.imread(os.path.join(img_folder, img_name))
@@ -96,7 +101,7 @@ for i, img_name in enumerate(images, start=1):
     tracks = tracker.update(dets_np, frame)
     # tracks: [[x1, y1, x2, y2, track_id], ...]
 
-    # ── Dibujar jugadores trackeados ──
+    # ── Dibujar jugadores trackeados y guardar resultados ──
     for track in tracks:
         x1, y1, x2, y2, raw_id = int(track[0]), int(track[1]), int(track[2]), int(track[3]), int(track[4])
         seq_id = get_sequential_id(raw_id)
@@ -104,6 +109,8 @@ for i, img_name in enumerate(images, start=1):
         cv2.rectangle(frame, (x1, y1), (x2, y2), color, 2)
         cv2.putText(frame, f"ID {seq_id}", (x1, y1 - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
+        # Formato MOT: frame, id, x, y, w, h, conf, -1, -1, -1
+        result_file.write(f"{i},{seq_id},{x1},{y1},{x2-x1},{y2-y1},1,-1,-1,-1\n")
 
     # ── Dibujar balón ──
     for (x, y, w, h) in ball_dets:
@@ -123,4 +130,5 @@ for i, img_name in enumerate(images, start=1):
     if cv2.waitKey(30) & 0xFF == 27:
         break
 
+result_file.close()
 cv2.destroyAllWindows()
