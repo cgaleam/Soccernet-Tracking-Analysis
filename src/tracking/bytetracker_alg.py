@@ -6,7 +6,7 @@ from boxmot import BYTETracker
 # ─────────────────────────────────────────
 # CONFIGURACIÓN
 # ─────────────────────────────────────────
-base_path   = r"path/to/SoccerNet/tracking/train/SNMOT-060/"
+base_path   = r"../path/to/SoccerNet/tracking/train/SNMOT-060/"
 img_folder  = os.path.join(base_path, "img1")
 det_path    = os.path.join(base_path, "det/det.txt")
 sequence    = os.path.basename(base_path.rstrip('/\\'))
