@@ -16,8 +16,8 @@ import trackeval
 # ─────────────────────────────────────────
 # CONFIGURACIÓN
 # ─────────────────────────────────────────
-RESULTS_PATH    = os.path.join(os.path.dirname(__file__), '..', '..', 'results')
-EVALUATION_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'evaluation')
+RESULTS_PATH    = os.path.join(os.path.dirname(__file__), '..', '..', 'results_train')
+EVALUATION_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'evaluation_train')
 
 os.makedirs(EVALUATION_PATH, exist_ok=True)
 

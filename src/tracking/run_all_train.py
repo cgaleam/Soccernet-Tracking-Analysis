@@ -28,7 +28,7 @@ from boxmot import BYTETracker, OCSORT
 # CONFIGURACIÓN GLOBAL
 # ─────────────────────────────────────────
 DATASET_PATH = r"../path/to/SoccerNet/tracking/train/"
-RESULTS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'results')
+RESULTS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'results_train')
 
 # ─────────────────────────────────────────
 # PARÁMETROS DE DETECCIÓN DEL BALÓN
