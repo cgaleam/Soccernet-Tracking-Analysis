@@ -15,7 +15,7 @@ from boxmot import BYTETracker, OCSORT
 # ─────────────────────────────────────────
 # CONFIGURACIÓN
 # ─────────────────────────────────────────
-DATASET_PATH = r"../path/to/SoccerNet/tracking/test"
+DATASET_PATH = "../SoccerNet/tracking/test"
 RESULTS_PATH = os.path.join(os.path.dirname(__file__), '..', '..',  'results_test')
 
 # ─────────────────────────────────────────

@@ -9,7 +9,7 @@ Uso:
 import sys
 import os
 
-DATASET_PATH = r"C:\Ingeniería del Software\4\2do Cuatri\TFG\path\to\SoccerNet\tracking\train"
+DATASET_PATH = "../SoccerNet/tracking/train"
 
 import trackeval
 

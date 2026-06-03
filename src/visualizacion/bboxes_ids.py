@@ -2,7 +2,7 @@ import cv2
 import os
 
 # paths
-base_path = r"../path/to/SoccerNet/tracking/train/SNMOT-105/"
+base_path = "../SoccerNet/tracking/train/SNMOT-105/"
 img_folder = os.path.join(base_path, "img1")
 gt_path = os.path.join(base_path, "gt/gt.txt")
 

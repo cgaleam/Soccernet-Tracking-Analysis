@@ -15,7 +15,7 @@ from boxmot import BYTETracker
 # ─────────────────────────────────────────
 # CONFIGURACIÓN
 # ─────────────────────────────────────────
-DATASET_PATH = r"../path/to/SoccerNet/tracking/train"
+DATASET_PATH = "../SoccerNet/tracking/train"
 SEQUENCE     = "SNMOT-076"
 OUTPUT_DIR   = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'videos')
 

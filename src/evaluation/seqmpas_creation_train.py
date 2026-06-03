@@ -11,7 +11,7 @@ import os
 # ─────────────────────────────────────────
 # CONFIGURACIÓN
 # ─────────────────────────────────────────
-DATASET_PATH = r"../path/to/SoccerNet/tracking/train"
+DATASET_PATH = "../SoccerNet/tracking/train"
  
 seqmaps_dir = os.path.join(DATASET_PATH, "seqmaps")
 os.makedirs(seqmaps_dir, exist_ok=True)
