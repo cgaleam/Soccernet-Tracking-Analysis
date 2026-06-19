@@ -6,12 +6,9 @@ METODOLOGÍA: para cada frame con balón detectado, se calcula qué jugador
 (track_id) está más cerca del balón y se asigna la posesión de ese frame
 al equipo de dicho jugador.
 
-LIMITACIÓN IMPORTANTE: esto NO es posesión real en sentido futbolístico
-(control efectivo del balón con el pie), sino una aproximación por
+Esto NO es posesión real en sentido futbolístico, sino una aproximación por
 proximidad espacial entre el centro del balón y el centro del jugador
-más cercano. Es una métrica habitual en proyectos de análisis automático
-cuando no se dispone de información de contacto/control, pero debe
-interpretarse como tal.
+más cercano.
 
 Uso:
     python src/metadata/ball_possession.py
@@ -44,9 +41,7 @@ MAX_POSSESSION_DISTANCE_PX = 150
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# ─────────────────────────────────────────
 # CARGAR ASIGNACIÓN DE EQUIPOS
-# ─────────────────────────────────────────
 teams_csv = os.path.join(TEAMS_DIR, f"{SEQUENCE}_teams_final.csv")
 
 if not os.path.exists(teams_csv):
@@ -62,14 +57,7 @@ with open(teams_csv, newline='') as f:
 
 print(f"Equipos cargados para {len(track_teams)} jugadores")
 
-# ─────────────────────────────────────────
 # CARGAR JUGADORES DEL TRACKING Y BALÓN DEL det.txt ORIGINAL
-# El balón se excluye antes de pasarse al tracker (ver run_all_test.py /
-# bytetracker_optimal.py: is_ball() filtra el balón de player_dets antes
-# de llamar a tracker.update()). Por ello el archivo de resultados de
-# BYTETracker NUNCA contiene detecciones de balón, y hay que leerlas del
-# det.txt original (detecciones crudas, sin tracking ni IDs).
-# ─────────────────────────────────────────
 DATASET_TEST = os.path.join(BASE_DIR, '..', '..', '..', 'SoccerNet', 'tracking', 'test')
 det_path = os.path.join(DATASET_TEST, SEQUENCE, "det", "det.txt")
 
@@ -115,10 +103,8 @@ with open(det_path) as f:
 print(f"Frames con balón detectado: {len(ball_by_frame)}")
 print(f"Frames con jugadores: {len(players_by_frame)}")
 
-# ─────────────────────────────────────────
 # CALCULAR JUGADOR MÁS CERCANO AL BALÓN, POR FRAME
-# ─────────────────────────────────────────
-possession_by_frame = {}  # frame -> team (0, 1, 'referee' o None)
+possession_by_frame = {}  # frame -> team (0, 1)
 
 for frame_id, (bx, by) in ball_by_frame.items():
     players = players_by_frame.get(frame_id, [])
@@ -143,9 +129,7 @@ for frame_id, (bx, by) in ball_by_frame.items():
 
 print(f"Frames con posesión asignada: {len(possession_by_frame)}")
 
-# ─────────────────────────────────────────
 # CALCULAR PORCENTAJES DE POSESIÓN
-# ─────────────────────────────────────────
 counts = defaultdict(int)
 for team in possession_by_frame.values():
     counts[team] += 1
@@ -158,9 +142,7 @@ for team in sorted(counts.keys(), key=str):
     label = "Árbitro" if team == 'referee' else f"Equipo {team}"
     print(f"  {label}: {counts[team]} frames ({pct:.1f}%)")
 
-# ─────────────────────────────────────────
 # GUARDAR RESULTADOS
-# ─────────────────────────────────────────
 output_csv = os.path.join(OUTPUT_DIR, f"{SEQUENCE}_possession.csv")
 with open(output_csv, 'w', newline='') as f:
     writer = csv.writer(f)
