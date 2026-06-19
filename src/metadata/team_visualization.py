@@ -23,7 +23,7 @@ DATASET_TEST = os.path.join(BASE_DIR, '..', '..', '..', 'SoccerNet', 'tracking',
 TEAMS_DIR    = os.path.join(BASE_DIR, '..', '..', 'metadata_output', 'teams')
 OUTPUT_DIR   = os.path.join(BASE_DIR, '..', '..', 'metadata_output', 'teams')
 
-SEQUENCE   = "SNMOT-117"  # secuencia a visualizar
+SEQUENCE   = "SNMOT-118"  # secuencia a visualizar
 FRAME_TO_SHOW = 100  # frame del vídeo a visualizar
 
 TEAM_COLORS = {

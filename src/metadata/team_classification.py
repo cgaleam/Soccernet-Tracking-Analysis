@@ -27,7 +27,7 @@ RESULTS_DIR  = os.path.join(BASE_DIR, '..', '..', 'results_hyperparam', 'bytetra
 DATASET_TEST = os.path.join(BASE_DIR, '..', '..', '..', 'SoccerNet', 'tracking', 'test')
 OUTPUT_DIR   = os.path.join(BASE_DIR, '..', '..', 'metadata_output', 'teams')
 
-SEQUENCE = "SNMOT-117"
+SEQUENCE = "SNMOT-118"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
