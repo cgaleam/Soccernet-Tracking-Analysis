@@ -1,7 +1,7 @@
 import cv2
 import os
 
-folder = "../SoccerNet/tracking/test/SNMOT-119/img1"
+folder = "../SoccerNet/tracking/test/SNMOT-118/img1"
 images = sorted(os.listdir(folder))
 
 for img_name in images:
