@@ -1,0 +1,301 @@
+:root {
+  --bg: #0f1420;
+  --bg-panel: #171e2e;
+  --bg-panel-alt: #1e2740;
+  --border: #2b3554;
+  --text: #e7ecf5;
+  --text-muted: #9aa5c0;
+  --accent: #3ecf8e;
+  --accent-dim: #2a9d6b;
+  --team0: #4f8cff;
+  --team1: #ff5b6a;
+  --ok: #3ecf8e;
+  color-scheme: dark;
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.6rem;
+  text-align: right;
+}
+
+th {
+  text-align: center;
+}
+
+td:first-child {
+  text-align: left;
+}
+
+thead th {
+  background: var(--bg-panel-alt);
+  font-weight: 600;
+}
+
+.app {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 4rem;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.75rem 0 2rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero svg {
+  flex-shrink: 0;
+}
+
+.hero h1 {
+  font-size: 1.7rem;
+  letter-spacing: 0.01em;
+}
+
+.hero p {
+  color: var(--text-muted);
+  margin: 0.35rem 0 0;
+  max-width: 640px;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.7rem 1.1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+.tab-button.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+.tab-button:hover {
+  color: var(--text);
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.panel h2 {
+  margin-bottom: 0.75rem;
+}
+
+.panel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.selectors {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.selector-group label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.chip-group {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.chip {
+  background: var(--bg-panel-alt);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.chip.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0b1119;
+  font-weight: 600;
+}
+
+.video-frame {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #000;
+  display: block;
+}
+
+.img-frame {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #000;
+  display: block;
+}
+
+.stat-row {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+
+.stat {
+  min-width: 120px;
+}
+
+.stat .value {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.stat .label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.possession-bar {
+  display: flex;
+  height: 26px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.possession-bar .team0 {
+  background: var(--team0);
+}
+
+.possession-bar .team1 {
+  background: var(--team1);
+}
+
+.possession-bar span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.legend .dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+}
+
+.legend .dot.team0 {
+  background: var(--team0);
+}
+
+.legend .dot.team1 {
+  background: var(--team1);
+}
+
+.empty-note {
+  color: var(--text-muted);
+  font-style: italic;
+  padding: 0.75rem;
+  border: 1px dashed var(--border);
+  border-radius: 8px;
+}
+
+.loading,
+.error {
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.error {
+  color: #ff8080;
+}
+
+.footnote {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+.best {
+  color: var(--ok);
+  font-weight: 700;
+}
