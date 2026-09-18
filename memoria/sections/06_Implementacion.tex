@@ -1,0 +1,760 @@
+\chapter{Implementación}
+\label{cap:implementacion}
+
+Este capítulo describe cómo se ha implementado, en la práctica, el diseño
+presentado en el capítulo~\ref{cap:diseno}. El capítulo se cierra con una sección
+dedicada explícitamente a los enfoques que se exploraron y finalmente no se
+incorporaron al sistema.
+
+\section{Entorno y herramientas}
+\label{sec:implementacion-entorno}
+
+Todo el desarrollo se ha realizado en Python 3.11, dentro de un entorno
+virtual (\texttt{venv\_tfg}) situado dentro del propio repositorio, con las
+dependencias fijadas en
+\texttt{requirements.txt} para garantizar la reproducibilidad.
+La Tabla~\ref{tab:impl-librerias} recoge las librerías con un papel directo
+en el sistema. Se omiten las dependencias transitivas de bajo nivel, como
+\texttt{torch} o \texttt{pandas}, que \texttt{requirements.txt} incluye por
+ser un volcado completo del entorno pero que ningún
+script del proyecto importa directamente: llegan al entorno como
+dependencias de \texttt{boxmot} y de \texttt{ultralytics}--.
+
+\clearpage
+
+\begin{table}[htp]
+\centering
+\caption{Librerías principales empleadas y su función en el sistema.}
+\label{tab:impl-librerias}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{2.6cm}|p{1.8cm}|p{7.0cm}|}
+\hline
+\rowcolor{gray!25}
+\textbf{Librería} & \textbf{Versión} & \textbf{Función en el sistema} \\
+\hline
+\texttt{boxmot} & 10.0.43 & Implementaciones de ByteTrack y OC-SORT bajo una
+  interfaz común. Versión fijada
+  deliberadamente por el problema P4 de la
+  Tabla~\ref{tab:impl-problemas}. \\
+\hline
+\texttt{trackeval} & \texttt{sn-trackeval} 0.4.0 & Evaluación con
+  métricas MOT estándar (
+  sección~\ref{sec:fundamentos-metricas}). Fork de TrackEval adaptado por
+  SoccerNet al formato de su benchmark. \\
+\hline
+\texttt{opencv-python} & 4.13.0.92 & Lectura y anotación de frames,
+  cálculo de la homografía, (sección~\ref{sec:implementacion-homografia}). \\
+\hline
+\texttt{filterpy} & 1.4.5 & Implementación del filtro de Kalman
+  (sección~\ref{subsec:fundamentos-kalman}) usada internamente por los
+  trackers de \texttt{boxmot}. \\
+\hline
+\texttt{lapx} & 0.9.4 & Resolución del problema de asignación mediante el
+  algoritmo húngaro (sección~\ref{subsec:fundamentos-hungaro}), usada
+  internamente por los trackers de \texttt{boxmot}. \\
+\hline
+\texttt{scikit-learn} & 1.8.0 & K-means para la clasificación de equipos
+  (sección~\ref{sec:fundamentos-kmeans}). \\
+\hline
+\texttt{scipy} & 1.17.1 & Estimación de densidad por núcleos
+  (\texttt{gaussian\_kde}) en los mapas de calor. \\
+\hline
+\texttt{matplotlib} & 3.10.9 & Generación de todas las figuras y gráficas
+  del proyecto. \\
+\hline
+\end{tabular}
+\end{table}
+
+Cabe señalar una inconsistencia menor detectada al redactar esta memoria:
+aunque \texttt{trackeval} está instalado y en uso real en el entorno de
+desarrollo (a través del paquete \texttt{sn-trackeval}), no aparece listado
+de forma explícita en \texttt{requirements.txt}, lo que sugiere que ese
+fichero no se regeneró tras instalarlo por separado. No afecta al
+funcionamiento del proyecto en el equipo de desarrollo actual, pero es una
+brecha de reproducibilidad frente al requisito RNF-001 que convendría
+corregir --regenerando \texttt{requirements.txt} con \texttt{sn-trackeval}
+explícitamente incluido-- antes de que un tercero intente reproducir el
+entorno desde cero.
+
+\subsection{Traslados de equipo de desarrollo}
+
+El desarrollo no se ha mantenido en un único equipo, lo que ha exigido
+recrear el entorno de trabajo en dos ocasiones: el proyecto se inició en un
+portátil personal, se trasladó a mitad de desarrollo a un ordenador de
+sobremesa con GPU AMD Radeon RX 6900 XT (16\,GB VRAM) en Windows, y finalmente a un equipo macOS. Cada
+traslado se apoyó en el mismo mecanismo: dependencias fijadas en
+\texttt{requirements.txt} y código versionado en Git, lo que permitió
+recrear el entorno funcional en el nuevo equipo sin más incidencias que las
+propias de cada sistema operativo.
+
+\subsection{Problemas de entorno encontrados}
+\label{subsec:implementacion-problemas}
+
+Configurar y mantener este entorno no fue inmediato. La
+Tabla~\ref{tab:impl-problemas} documenta, siguiendo el
+mismo criterio de transparencia del resto de esta memoria, los catorce problemas de
+entorno registrados durante el desarrollo, con su solución.
+
+\begin{table}[htp]
+\centering
+\caption{Problemas de entorno encontrados durante el desarrollo y su solución.}
+\label{tab:impl-problemas}
+\renewcommand{\arraystretch}{1.05}
+\footnotesize
+\begin{tabular}{|p{0.7cm}|p{5.5cm}|p{5.3cm}|}
+\hline
+\rowcolor{gray!25}
+\textbf{ID} & \textbf{Problema} & \textbf{Solución} \\
+\hline
+P1 & Python 3.14 incompatible con las librerías del proyecto &
+  Fijar Python 3.11 en el entorno virtual \\
+\hline
+P2 & Mezcla de entornos conda y venv activos a la vez, con conflictos de
+  paquetes & Desactivar conda y trabajar exclusivamente con \texttt{venv} \\
+\hline
+P3 & \texttt{conda activate venv\_tfg} fallaba, ya que \texttt{venv\_tfg}
+  no es un entorno conda & Activar el entorno con el mecanismo propio de
+  \texttt{venv} (\texttt{source venv\_tfg/bin/activate}) \\
+\hline
+P4 & \texttt{boxmot} v18 no expone las clases de cada tracker por separado,
+  necesarias para la comparativa & Fijar la versión \texttt{10.0.43} en
+  \texttt{requirements.txt} \\
+\hline
+P5 & Error de tipo en \texttt{kalman\_filter.py} de OC-SORT por
+  incompatibilidad con la versión de NumPy instalada & Fijar
+  \texttt{numpy==1.26.4} en el momento de detectarlo\footnotemark \\
+\hline
+P6 & Detecciones de \texttt{det.txt} con 5 columnas en lugar de las 6 que
+  espera \texttt{boxmot} & Añadir manualmente la columna de clase (valor
+  \texttt{0}) antes de pasar las detecciones al tracker \\
+\hline
+P7 & La variable de entorno \texttt{\$HOME} se colaba en comandos al
+  copiar y pegar instrucciones entre terminales & Revisar manualmente los
+  comandos antes de ejecutarlos \\
+\hline
+P8 & El entorno virtual se creó fuera de la carpeta del proyecto y VS Code
+  no lo detectaba automáticamente & Recrear el entorno dentro del
+  repositorio \\
+\hline
+P9 & Los entornos virtuales de Python no son reubicables (las rutas
+  absolutas quedan grabadas en sus scripts de activación) &
+  Recrearlos siempre en su ubicación final, no moverlos tras crearlos \\
+\hline
+P10 & \texttt{requirements.txt} estaba vacío & Regenerarlo con
+  \texttt{pip freeze > requirements.txt} \\
+\hline
+P13 & \texttt{load\_dotenv()} no recargaba el fichero \texttt{.env} tras
+  modificarlo & Forzar la recarga con \texttt{load\_dotenv(override=True)} \\
+\hline
+P14 & Carpetas basura generadas por rutas mal resueltas
+  (\texttt{path/}, \texttt{\$HOME/}, \texttt{.venv/}, \texttt{models/}) &
+  Identificarlas y eliminarlas manualmente \\
+\hline
+P15 & Traslado del proyecto a macOS: posible incompatibilidad de entorno &
+  Entorno recreado desde \texttt{requirements.txt} sin incidencias
+  destacables; solo hubo que ajustar alguna ruta de Windows a macOS \\
+\hline
+P17 & Los vídeos exportados con el \emph{fourcc} \texttt{mp4v} de OpenCV no
+  se reproducían en el navegador & Usar el \emph{fourcc} \texttt{avc1}
+  (H.264), disponible porque OpenCV, con esto, el tamaño de cada vídeo se redujo en torno a un 75\,\% \\
+\hline
+\end{tabular}
+\end{table}
+\footnotetext{El \texttt{requirements.txt} final del proyecto fija
+\texttt{numpy==2.4.4}, una versión posterior a la que resolvió este
+problema en su momento. Esto sugiere que la incompatibilidad original fue
+resuelta más adelante en versiones posteriores de \texttt{boxmot} o de
+OC-SORT, aunque no se ha vuelto a verificar explícitamente la causa
+original tras la actualización.}
+
+De estos catorce problemas, la mayoría son propios de la configuración
+inicial de cualquier entorno Python (P1-P3, P8-P10) y no volvieron a
+aparecer una vez resueltos. Los más relevantes para entender decisiones
+posteriores de este proyecto son P4 y P6.
+P17, ya en la fase de aplicación web, muestra que ese mismo tipo de
+fricción de entorno no es exclusivo de Python: elegir un códec de vídeo
+compatible con el navegador es un problema de la misma naturaleza en un
+\emph{stack} tecnológico distinto.
+
+\section{Estructura del repositorio}
+\label{sec:implementacion-estructura}
+
+El código del pipeline offline reside en \texttt{src/}, organizado en
+paquetes por responsabilidad, resumidos en la
+Tabla~\ref{tab:impl-estructura}.
+
+\begin{table}[htp]
+\centering
+\caption{Paquetes del repositorio y su responsabilidad.}
+\label{tab:impl-estructura}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{3.6cm}|p{8.3cm}|}
+\hline
+\rowcolor{gray!25}
+\textbf{Paquete} & \textbf{Responsabilidad} \\
+\hline
+\texttt{src/\allowbreak visualizacion/} & Scripts exploratorios iniciales sobre el
+  \emph{ground truth}. \\
+\hline
+\texttt{src/\allowbreak tracking/} & Implementación de ByteTrack y OC-SORT, ejecución
+  batch sobre un split completo, y exportación de vídeos anotados
+  (\texttt{src/\allowbreak tracking/\allowbreak export/}). \\
+\hline
+\texttt{src/\allowbreak evaluation/} & Generación de \emph{seqmaps} y evaluación con
+  \texttt{TrackEval} sobre train y test. \\
+\hline
+\texttt{src/\allowbreak hyperparameter\_\allowbreak study/} & Barrido de hiperparámetros de cada
+  algoritmo, configuración óptima y resumen comparativo. \\
+\hline
+\texttt{src/\allowbreak metadata/} & Todo lo relacionado con la generación y gestión de metadatos. \\
+\hline
+\texttt{src/\allowbreak utils/} & Scripts de utilidad para tareas de un solo uso. \\
+\hline
+\texttt{src/\allowbreak web\_\allowbreak export/} & Generación de metadatos de OC-SORT y
+  empaquetado de todos los artefactos estáticos que consume la aplicación
+  web (sección~\ref{sec:implementacion-web}). \\
+\hline
+\end{tabular}
+\end{table}
+
+El código de la aplicación web, al no ser Python, vive fuera de
+\texttt{src/}: en \texttt{frontend/}, un proyecto independiente de React.(sección~\ref{sec:implementacion-web}).
+
+\section{Implementación del tracking}
+\label{sec:implementacion-tracking}
+
+\subsection{Scripts de visualización inicial}
+\label{subsec:impl-visualizacion}
+
+Antes de implementar ningún algoritmo de tracking, la primera fase del
+proyecto (sección~\ref{sec:gestion-fases}) se dedicó a comprender el
+formato del dataset mediante scripts exploratorios, todos
+ellos trabajando directamente sobre el \emph{ground truth}
+(\texttt{gt.txt}) y no sobre predicciones reales de ningún tracker:
+\texttt{reproducir\_vid.py} reproduce una secuencia como vídeo con OpenCV;
+\texttt{bboxes\_ids.py} dibuja las cajas del \emph{ground truth} en verde
+con su identificador; y \texttt{bboxes\_ids\_dif\_colors.py}
+añade un color único y persistente por identificador, para facilitar el
+seguimiento visual de cada jugador entre frames.
+
+El último de estos scripts exploratorios,
+\texttt{bboxes\_balltrack\_geoprop.py}, ya incorpora el filtro geométrico
+de separación del balón (sección~\ref{subsec:impl-balon}) y dibuja el balón
+en rojo, distinto de los jugadores. Es interesante notar que
+\texttt{bboxes\_ids.py}.
+
+\subsection{Filtrado geométrico del balón}
+\label{subsec:impl-balon}
+
+Como se diseñó en la sección~\ref{subsec:diseno-balon}, el balón se separa
+de las detecciones de personas mediante dos condiciones sobre su caja
+delimitadora, aplicadas de forma idéntica en todos los scripts del
+proyecto que necesitan distinguir balón de jugadores:
+
+\begin{center}
+\texttt{BALL\_MAX\_AREA = 2000} \quad
+\texttt{BALL\_MIN\_RATIO = 0.7} \quad
+\texttt{BALL\_MAX\_RATIO = 1.3}
+\end{center}
+
+Una detección se clasifica como balón cuando su área en píxeles
+($w \times h$) es inferior a \texttt{BALL\_MAX\_AREA} \emph{y}, a la vez, su
+proporción $w/h$ está dentro del rango
+[\texttt{BALL\_MIN\_RATIO}, \texttt{BALL\_MAX\_RATIO}], es decir, cuando la
+caja es aproximadamente cuadrada. Estos tres valores se fijaron de forma
+que, observando las dimensiones típicas del balón frente a las de un
+jugador en las secuencias de SoccerNet, y se mantienen constantes en todo
+el proyecto para que el balón se identifique de forma consistente en todas
+las fases.
+
+\subsection{ByteTrack y OC-SORT}
+\label{subsec:impl-algoritmos}
+
+Ambos algoritmos se implementan siguiendo el bucle diseñado en la
+sección~\ref{subsec:diseno-tracking-algoritmos}, instanciando en cada caso la clase
+correspondiente de \texttt{boxmot}: \texttt{BYTETracker()} en
+\texttt{bytetracker\_alg.py}, con su configuración por defecto como punto
+de partida, y
+\texttt{OCSORT} también con su configuración por defecto en
+\texttt{sort\_alg.py}.
+
+El nombre de este último fichero, \texttt{sort\_alg.py}, es una muestra
+histórica, documentada en la sección~\ref{subsec:fundamentos-sort}: la
+intención original era implementar el SORT clásico, pero \texttt{boxmot}
+en su versión fijada (P4) no expone una clase \texttt{SORT} independiente,
+solo \texttt{OCSORT}, su evolución directa. El fichero conserva su nombre
+original como constancia de esa decisión, aunque su contenido implementa
+en realidad OC-SORT.
+
+Las detecciones que llegan de \texttt{det.txt} en formato
+$(x, y, w, h)$ se convierten al formato $(x_1, y_1, x_2, y_2, \text{conf},
+\text{clase})$ que espera \texttt{boxmot} antes de invocar
+\texttt{tracker.update()} en cada frame, y el resultado se reasigna a una numeración secuencial
+mediante un diccionario de correspondencia, antes de escribirse en
+el fichero de resultados con el formato MOT estándar.
+
+\subsection{Ejecución batch y reorganización de resultados}
+
+La ejecución sobre la totalidad de un split se implementa en
+\texttt{run\_all\_train.py} y \texttt{run\_all\_test.py}, que recorren
+todas las secuencias del directorio del split correspondiente y aplican,
+para cada una y cada algoritmo configurado, el mismo bucle de tracking
+descrito en la sección anterior (Figura~\ref{fig:diseno-batch}). Ambos
+scripts comparten la misma lógica de filtrado del balón y de escritura de
+resultados que las versiones de un único algoritmo y una única secuencia.
+
+En una primera versión del proyecto, los
+resultados de cada secuencia se escribían en una subcarpeta propia
+(\texttt{results/bytetracker/SNMOT-060/SNMOT-060.txt}), estructura que
+\texttt{TrackEval} no esperaba de forma directa. Este script recorrió una
+única vez los resultados ya generados y los aplanó a la estructura que
+finalmente adopta el proyecto (\texttt{results/bytetracker/SNMOT-060.txt}),
+sin necesidad de rehacer el tracking desde cero. No forma parte del flujo
+habitual de ejecución del sistema, pero se conserva en el repositorio como
+constancia de esa reorganización.
+
+\section{Implementación de la evaluación}
+\label{sec:implementacion-evaluacion}
+
+La evaluación (diseñada en la sección~\ref{sec:diseno-evaluacion}) se
+implementa en dos scripts,
+\texttt{evaluate\_train.py} y \texttt{evaluate\_test.py}, que configuran
+\texttt{TrackEval} con los mismos parámetros salvo el split evaluado:
+
+\begin{center}
+\begin{minipage}{0.85\textwidth}
+\begin{verbatim}
+dataset_config['BENCHMARK']          = 'SoccerNet'
+dataset_config['TRACKERS_TO_EVAL']   = ['bytetracker', 'ocsort']
+dataset_config['SKIP_SPLIT_FOL']     = True
+dataset_config['DO_PREPROC']         = False
+metrics_config = {'METRICS': ['HOTA', 'MOTA', 'IDF1'], 'THRESHOLD': 0.5}
+\end{verbatim}
+\end{minipage}
+\end{center}
+
+donde \texttt{BENCHMARK = 'SoccerNet'} indica a \texttt{TrackEval} que use
+el \emph{seqmap} generado por
+\texttt{seqmaps\_creation\_test.py}/\texttt{seqmpas\_creation\_train.py}
+(sección~\ref{sec:diseno-evaluacion}) en lugar de un benchmark predefinido,
+y \texttt{THRESHOLD = 0.5} fija el umbral de IoU al que se calculan MOTA e
+IDF1, ambas métricas de umbral único.
+
+\subsection{Aclaración metodológica: HOTA frente a HOTA(0)}
+\label{subsec:impl-hota-vs-hota0}
+
+Antes de presentar cualquier resultado numérico en el
+capítulo~\ref{cap:pruebas}, es necesario dejar constancia de un matiz
+metodológico detectado al preparar esta memoria, en cumplimiento del
+requisito de documentación honesta. \texttt{TrackEval} exporta,
+entre sus columnas de salida, tanto \textbf{HOTA}, promediada sobre el
+rango completo de umbrales de IoU de 0,05 a 0,95, como
+\textbf{HOTA(0)}\footnote{La notación \texttt{HOTA(0)} es la que usa
+\texttt{TrackEval} internamente para referirse al valor de HOTA en el
+primer umbral de su rango de evaluación, que con la configuración de este
+proyecto (\texttt{THRESHOLD = 0.5}) coincide con el umbral de 0,5 usado
+también por MOTA e IDF1.}.
+
+El script de resumen del estudio de hiperparámetros
+(\texttt{summarize\_hyperparam.py}) lee explícitamente la columna
+\texttt{HOTA(0)} de cada resultado:
+
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+\begin{verbatim}
+hota = float(row.get('HOTA(0)', row.get('HOTA___50', 0))) * 100
+\end{verbatim}
+\end{minipage}
+\end{center}
+
+lo que significa que \textbf{todos los valores de ``HOTA'' reportados en
+el estudio de hiperparámetros de este proyecto}
+\textbf{son en realidad HOTA(0)}, es decir, HOTA evaluada únicamente al
+50\,\% de solapamiento IoU, y no la métrica HOTA integrada que
+describe la sección~\ref{subsec:fundamentos-hota}. Ambas son métricas
+válidas y ambas las calcula \texttt{TrackEval} de forma estándar, pero no
+son intercambiables: al integrar sobre un rango de umbrales en lugar de
+uno solo, la HOTA completa es más exigente y, en general, produce un valor
+distinto.
+El capítulo~\ref{cap:pruebas} presenta ambos valores por separado allí
+donde la distinción afecta a las conclusiones, y este matiz se retoma
+explícitamente donde corresponda para no inducir a una lectura equivocada
+de los resultados.
+
+\section{Implementación del estudio de hiperparámetros}
+\label{sec:implementacion-hiperparametros}
+
+El estudio de hiperparámetros se aplica siempre sobre el
+conjunto de \textbf{test}, para que la
+configuración resultante no esté ajustada a datos ya vistos durante el
+desarrollo inicial. Cada algoritmo tiene su propia configuración base y su
+propio rango de búsqueda por hiperparámetro, recogidos en la
+Tabla~\ref{tab:impl-hiperparametros-espacio}.
+
+\begin{table}[htp]
+\centering
+\caption{Configuración base y rango de búsqueda de cada hiperparámetro.}
+\label{tab:impl-hiperparametros-espacio}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{|p{2.6cm}|p{3.1cm}|p{1.6cm}|p{5.7cm}|}
+\hline
+\rowcolor{gray!25}
+\textbf{Algoritmo} & \textbf{Hiperparámetro} & \textbf{Base} & \textbf{Rango de búsqueda} \\
+\hline
+\multirow{3}{*}{ByteTrack} & \texttt{track\_thresh} & 0.45 & 0.2, 0.3, 0.45, 0.6 \\
+\cline{2-4}
+ & \texttt{match\_thresh} & 0.8 & 0.6, 0.7, 0.8, 0.9 \\
+\cline{2-4}
+ & \texttt{track\_buffer} & 25 & 10, 20, 25, 40 \\
+\hline
+\multirow{4}{*}{OC-SORT} & \texttt{det\_thresh} & 0.3 & 0.1, 0.2, 0.3, 0.4, 0.5 \\
+\cline{2-4}
+ & \texttt{max\_age} & 30 & 10, 20, 30, 50 \\
+\cline{2-4}
+ & \texttt{min\_hits} & 3 & 1, 2, 3, 5 \\
+\cline{2-4}
+ & \texttt{iou\_threshold} & 0.3 & 0.1, 0.2, 0.3, 0.4, 0.5 \\
+\hline
+\end{tabular}
+\end{table}
+
+Los resultados de este barrido se resumen en la Tabla~\ref{tab:impl-hiperparametros-resultados}
+para los hiperparámetros con efecto observable. Los hiperparámetros
+\texttt{track\_thresh} (ByteTrack) y \texttt{det\_thresh} (OC-SORT) no
+mostraron ningún efecto sobre la métrica en el rango probado, y se omiten
+de la tabla por brevedad.
+
+\begin{table}[htp]
+\centering
+\caption{Efecto de cada hiperparámetro sobre HOTA(0) (\%) en el conjunto de test.}
+\label{tab:impl-hiperparametros-resultados}
+\renewcommand{\arraystretch}{1.2}
+\small
+\begin{tabular}{|p{3.1cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|}
+\hline
+\rowcolor{gray!25}
+\textbf{Hiperparámetro} & \multicolumn{5}{c|}{\textbf{Valor del hiperparámetro}} \\
+\hline
+\texttt{match\_thresh} (BT) & 0.6 & 0.7 & 0.8 (base) & 0.9 & -- \\
+\hline
+HOTA(0) & 74.62 & 78.03 & 80.20 & \textbf{81.48} & -- \\
+\hline
+\texttt{track\_buffer} (BT) & 10 & 20 & 25 (base) & 40 & -- \\
+\hline
+HOTA(0) & \textbf{80.36} & 80.26 & 80.20 & 80.12 & -- \\
+\hline
+\texttt{iou\_threshold} (OC) & 0.1 & 0.2 & 0.3 (base) & 0.4 & 0.5 \\
+\hline
+HOTA(0) & \textbf{80.17} & 78.71 & 75.51 & 70.90 & 64.49 \\
+\hline
+\texttt{max\_age} (OC) & 10 & 20 & 30 (base) & 50 & -- \\
+\hline
+HOTA(0) & \textbf{76.13} & 75.75 & 75.51 & 75.13 & -- \\
+\hline
+\texttt{min\_hits} (OC) & 1 & 2 & 3 (base) & 5 & -- \\
+\hline
+HOTA(0) & \textbf{76.26} & 75.90 & 75.51 & 74.78 & -- \\
+\hline
+\end{tabular}
+\end{table}
+
+A partir de estos resultados individuales, \texttt{bytetracker\_optimal.py}
+y \texttt{ocsort\_optimal.py} fijan y validan la configuración combinada
+que RF-008 exige confirmar de forma independiente:
+\texttt{match\_thresh=0.9, track\_buffer=10} para ByteTrack (manteniendo
+\texttt{track\_thresh=0.45}, sin efecto), y
+\texttt{iou\_threshold=0.1, max\_age=10, min\_hits=1} para OC-SORT
+(manteniendo \texttt{det\_thresh=0.3}, sin efecto). Al ejecutar y evaluar
+estas configuraciones combinadas de forma independiente, se obtiene HOTA(0)
+= 81{,}43 para ByteTrack y HOTA(0) = 80{,}92 para OC-SORT.
+
+Es interesante notar que la configuración combinada de ByteTrack
+(81{,}43) resulta ligeramente \emph{inferior} al mejor valor individual de
+\texttt{match\_thresh} por sí solo (81{,}48 con
+\texttt{match\_thresh=0.9} y \texttt{track\_buffer} sin modificar): los
+efectos de ambos hiperparámetros no son estrictamente aditivos, y combinar
+el mejor valor de cada uno por separado no garantiza el mejor resultado
+conjunto. En
+OC-SORT, en cambio, la combinación de los tres hiperparámetros (80{,}92)
+mejora claramente sobre cualquiera de ellos por separado (mejor individual:
+80{,}17 con \texttt{iou\_threshold=0.1}), lo que indica que en este caso sí
+se refuerzan entre sí. Esta configuración óptima de ByteTrack, por ser la
+de mayor HOTA(0) absoluto entre ambos algoritmos, es la que se usa como
+base de todo el pipeline de metadatos de la
+sección~\ref{sec:implementacion-metadatos}.
+
+Por último, \texttt{summarize\_hyperparam.py} consolida todos estos
+resultados en \texttt{evaluation\_hyperparam/summary\_table.csv} y genera
+una gráfica de barras por hiperparámetro y algoritmo en
+\texttt{evaluation\_hyperparam/plots/}.
+
+\section{Implementación del pipeline de metadatos}
+\label{sec:implementacion-metadatos}
+
+Todo el pipeline de metadatos parte de los resultados de tracking generados
+con la configuración óptima de ByteTrack, como se
+justificó en la sección anterior.
+
+\subsection{Clasificación de equipos}
+\label{subsec:impl-equipos}
+
+El script \texttt{team\_classification.py} implementa el diseño en dos niveles de
+K-means de la sección~\ref{subsec:diseno-equipos}. Para limitar el coste
+computacional, no procesa todos los frames de la secuencia, sino un
+muestreo de \texttt{1 de cada 5} (\texttt{SAMPLE\_EVERY = 5}); dado que un
+jugador aparece en decenas de frames a lo largo de una secuencia, este
+muestreo basta para determinar su equipo mayoritario sin analizar la
+secuencia completa. Para cada detección muestreada, se recorta la región
+superior de su caja delimitadora para aislar la
+zona de la camiseta y evitar incluir piernas, césped o el balón en
+el recorte, antes de aplicar K-means con $k=1$ para obtener su color
+dominante en espacio de color BGR. Los colores dominantes de todas las
+muestras de la secuencia se agrupan después con K-means $k=2$, y el equipo
+final de cada \texttt{track\_id} se determina por mayoría entre sus
+muestras individuales, así evita que el ruido puede clasificar mal alguna muestra
+puntual sin afectar al resultado global.
+
+\subsection{Mapas de calor}
+
+El pipeline de mapas de calor tiene, en realidad, dos implementaciones, resultado de una iteración de diseño explícita
+documentada aquí: \texttt{general\_heatmap.py},
+la primera versión, representa las posiciones directamente en píxeles de
+cámara mediante \texttt{hexbin} de \texttt{matplotlib}, sin proyectar sobre
+ningún campo dibujado; \texttt{heatmap\_field.py}, la versión final y la
+que se usa en el resto del pipeline, sustituye \texttt{hexbin}
+por una estimación de densidad por núcleos (\texttt{gaussian\_kde} de
+\texttt{scipy}) proyectada sobre un campo de 105\,m $\times$ 68\,m dibujado
+a escala (Figura~\ref{fig:fundamentos-campo}), con dos mejoras
+concretas sobre la primera versión: un degradado continuo que también
+representa las zonas de baja densidad y un escalado por el rango
+observado de posiciones (percentiles 5 y 95). El script \texttt{heatmap\_by\_team.py}
+reutiliza exactamente esta misma lógica de proyección y KDE ya validada en
+\texttt{heatmap\_field.py}, aplicándola por separado a las posiciones de
+cada equipo pero con una única escala
+común a ambos, para que los dos mapas resultantes sean directamente
+comparables entre sí (Figura~\ref{fig:diseno-heatmap-ejemplo}).
+
+\subsection{Homografía real: distancia y velocidad}
+\label{sec:implementacion-homografia}
+
+Como se diseñó en la sección~\ref{subsec:diseno-homografia}, la homografía
+real se calcula sobre un tramo concreto de cámara estable de cada secuencia
+de demostración, identificando manualmente 4 puntos
+de referencia en un frame representativo
+del tramo. Para SNMOT-116, el tramo usado es el intervalo de frames
+$[1, 380]$, correspondiente a una jugada de córner con cámara estable; para
+SNMOT-118, el intervalo $[350, 650]$. Los puntos de imagen se identifican
+sobre un frame de referencia de $1456 \times 816$ píxeles y se reescalan a
+la resolución real de las secuencias ($1920 \times 1080$) antes de calcular
+la homografía, y se corresponden con las coordenadas reales del área
+pequeña según las medidas FIFA.
+
+Antes de usarse, la matriz de homografía calculada se valida
+reproyectando estos mismos 4 puntos y comparando el resultado con las
+coordenadas de campo esperadas: para el tramo de SNMOT-116, el error medio
+de reproyección obtenido es de apenas unos pocos centímetros, lo que
+confirma que la matriz describe correctamente la transformación en la zona
+próxima a los puntos de calibración.
+A partir de esa matriz, la posición de cada jugador se proyecta a
+metros reales frame a frame, y de esa secuencia de posiciones proyectadas
+se calcula la distancia total recorrida (suma de las distancias euclídeas
+entre posiciones consecutivas) y la velocidad, tanto media como de pico
+--esta última como el percentil 95 de las velocidades instantáneas
+calculadas sobre una ventana de 1 segundo.
+
+Para los mapas de calor calibrados con esta homografía real
+(\texttt{heatmap\_homography\_demo\_116.py} y
+\texttt{heatmap\_homography\_demo\_118.py}), el diseño incorpora además el
+sombreado de honestidad visual descrito en la
+sección~\ref{subsec:diseno-homografia}
+(Figura~\ref{fig:diseno-heatmap-homografia-ejemplo}): las zonas del campo
+alejadas de los 4 puntos de calibración se oscurecen para indicar
+visualmente que la proyección en esa región no es fiable. Para SNMOT-118,
+además, dos identificadores de tracking
+(\texttt{EXCLUDED\_TRACK\_IDS = [328, 274]}) se excluyen manualmente del
+mapa de calor calibrado: corresponden a jugadores cuya posición proyectada
+se aleja del campo de forma incompatible con un movimiento humano real,
+señal de que su trayectoria de tracking se desvía significativamente de la
+zona de cámara estable para la que se calculó esa homografía concreta.
+
+\subsection{Posesión de balón}
+\label{subsec:impl-posesion}
+
+El script \texttt{ball\_possesion.py} implementa la heurística de proximidad diseñada
+en la sección~\ref{subsec:diseno-posesion}: para cada frame en que el
+filtro geométrico detecta un balón en el
+\texttt{det.txt} original, se calcula la
+distancia euclídea entre su centro y el centro de cada jugador presente en
+ese frame según los resultados de tracking, y se asigna la posesión al
+equipo del jugador más cercano siempre que esa distancia mínima no supere
+\texttt{MAX\_POSSESSION\_DISTANCE\_PX = 150} píxeles; por encima
+de ese umbral, el balón se considera suelto y el frame no computa para
+ningún equipo. El resultado se agrega tanto a nivel de frame
+(\texttt{\_possession.csv}) como agregado en porcentaje por equipo
+(\texttt{\_possession\_summary.csv}).
+
+\section{Implementación de la aplicación web}
+\label{sec:implementacion-web}
+
+Esta sección detalla la implementación de la aplicación web diseñada en la
+sección~\ref{sec:diseno-web}: los dos scripts nuevos de
+\texttt{src/web\_export/} que preparan los datos, y el proyecto
+\texttt{frontend/} que los consume.
+
+\subsection{Generación de metadatos para OC-SORT}
+\label{subsec:impl-web-metadatos-ocsort}
+
+El pipeline de metadatos original
+solo se había ejecutado sobre la configuración óptima de ByteTrack. Para
+que el selector de algoritmo de la aplicación web tuviera sentido también
+en el explorador de secuencias, \texttt{src/web\_export/compute\_metadata.py}
+reproduce exactamente la misma lógica parametrizada por algoritmo, en lugar de duplicar los cinco
+scripts de \texttt{src/metadata/} o modificarlos. Los 4 puntos de calibración de
+homografía descritos en la sección~\ref{sec:implementacion-homografia}
+se reutilizan sin modificación para OC-SORT, porque dependen únicamente
+de la posición fija de la cámara en ese tramo de vídeo, no del algoritmo
+de tracking.
+
+Para no mezclar ni sobrescribir los artefactos de ByteTrack ya generados, la
+salida de OC-SORT se escribe en un árbol de carpetas paralelo,
+ con el mismo formato de nombre de fichero que la
+rama de ByteTrack. La ejecución sobre las tres secuencias de demostración
+produjo por ejemplo porcentajes de posesión por
+equipo muy próximos a los ya obtenidos con ByteTrack en el
+capítulo~\ref{cap:pruebas} para las mismas secuencias: por ejemplo, en
+SNMOT-116 el equipo dominante se queda con el 86,2\,\% de la posesión con
+OC-SORT frente al 86,0\,\% con ByteTrack (aunque a qué equipo, 0 o 1, le
+corresponde ese porcentaje mayoritario puede no coincidir entre ambas
+ejecuciones, ya que la etiqueta numérica que K-means asigna a cada grupo
+es arbitraria y no se fija entre ejecuciones independientes). Esta
+cercanía es una comprobación indirecta de que la heurística de posesión
+por proximidad (sección~\ref{subsec:impl-posesion}) es razonablemente
+estable frente al algoritmo de tracking subyacente, ya que ambos parten de
+las mismas detecciones y solo difieren en cómo las asocian entre frames.
+
+\subsection{Empaquetado de datos estáticos para la web}
+\label{subsec:impl-web-bundle}
+
+\texttt{src/web\_export/export\_bundle.py} genera, para cada una de las
+combinaciones de secuencia y algoritmo, el paquete de artefactos que
+consume la interfaz, bajo \texttt{frontend/public/data/}:
+
+\begin{itemize}
+\item \textbf{Vídeo anotado}: Este vídeo se dibuja
+  directamente sobre el fichero de resultados ya calculado con la
+  configuración óptima, sin recomputar nada: las cajas se colorean por
+  equipo a partir del CSV de clasificación correspondiente, con el balón
+  resaltado en un color distinto, sobre el tramo de frames ya usado en la
+  homografía o un tramo por
+  defecto de longitud comparable. Cada vídeo se reescala a 960\,px de ancho
+  antes de codificarse, para mantener un tamaño razonable sin perder
+  legibilidad de las cajas.
+\item \textbf{Imágenes}: copia directa de los mapas de calor y del mapa
+  homografiado ya generados en las secciones~\ref{subsec:impl-web-metadatos-ocsort}
+  y~\ref{sec:implementacion-metadatos}.
+\item \textbf{\texttt{sequences.json}}: un registro por combinación de
+  secuencia y algoritmo, con el recuento de jugadores por equipo, el
+  porcentaje de posesión, el top-5 de distancia/velocidad y las rutas a
+  vídeo e imágenes; los campos correspondientes a datos que no existen
+  para esa combinación concreta se serializan como \texttt{null} en lugar de omitirse, para
+  que la interfaz pueda distinguir explícitamente \enquote{no calculado} de
+  \enquote{campo ausente por error}.
+\end{itemize}
+
+La primera versión de los vídeos, codificada con el \emph{fourcc}
+\texttt{mp4v} (MPEG-4 Part 2) de OpenCV, no se reproducía en ningún
+navegador (problema P17, Tabla~\ref{tab:impl-problemas}): los navegadores
+modernos solo soportan H.264/H.265 dentro de un contenedor
+\texttt{.mp4}, no MPEG-4 Part 2. Cambiar el \emph{fourcc} a
+\texttt{avc1} ( fue posible porque la instalación de OpenCV usada en este
+proyecto está compilada con soporte de FFmpeg) resolvió el problema.
+
+\subsection{Frontend}
+\label{subsec:impl-web-frontend}
+
+La parte del frontend es un proyecto independiente creado con
+\texttt{vite}, y en producción se compila a HTML/CSS/JS estático.
+La configuración de Vite fija \texttt{base:
+'./'} para que las rutas del build resultante sean relativas y el sitio
+se pueda desplegar en cualquier subruta o servirse en local sin tocar
+configuración.
+
+La interfaz reproduce el diseño de la
+sección~\ref{subsec:diseno-web-ui}: un componente \texttt{App.tsx} con
+una cabecera fija y dos pestañas que
+alternan entre \texttt{ComparativaAlgoritmos} y
+\texttt{ExploradorSecuencias}. Este último mantiene en estado local la
+secuencia y el algoritmo seleccionados, y renderiza cinco componentes de
+panel (\texttt{VideoPanel}, \texttt{TeamsPanel}, \texttt{PossessionPanel},
+\texttt{HeatmapPanel}, \texttt{HomografiaPanel}) a partir de la entrada de
+\texttt{sequences.json} que coincide con esa combinación; ninguno de
+estos componentes calcula nada, se limitan a formatear y mostrar los
+campos ya presentes en el JSON, incluyendo el caso en que un campo llega
+a \texttt{null}, donde el panel muestra una nota explícita de
+\enquote{no disponible para esta combinación} para que se lea como una
+característica de los datos y no como un fallo de carga.
+
+La paleta de la interfaz sigue un esquema oscuro, con un único color de
+acento reutilizado en el subrayado de la pestaña
+activa, los selectores de secuencia y algoritmo, y el propio logotipo del
+proyecto, el mismo tono ya usado dentro de la tabla comparativa para
+resaltar el mejor valor de cada métrica entre los dos algoritmos: una
+única decisión de color reutilizada en todo el sitio en lugar de
+introducir varias.
+
+\section{Enfoques explorados y descartados}
+\label{sec:implementacion-descartados}
+
+Como se ha ido señalando a lo largo de este capítulo y del
+proyecto en general, no todo lo probado durante este proyecto
+llegó a incorporarse al sistema final. Esta sección reúne, a modo de
+resumen, los enfoques explorados y descartados y la
+razón de su descarte.
+
+\subsection{Detección del balón con YOLO}
+\label{subsec:impl-yolo}
+
+Como se explicó en la sección~\ref{subsec:fundamentos-balon}, la primera
+aproximación para separar el balón de los jugadores no fue el filtro
+geométrico finalmente adoptado
+(sección~\ref{subsec:impl-balon}), sino un detector de objetos entrenado
+con aprendizaje profundo, \textbf{YOLOv8n} \citep{redmon2016yolo}, aplicado
+directamente sobre los frames.
+Se descartó tras las primeras pruebas porque, sin
+reentrenamiento específico para balones de fútbol en las condiciones de
+cámara e iluminación de SoccerNet, el modelo preentrenado genérico obtenía
+resultados muy pobres, con falsos negativos frecuentes y falsos positivos
+sobre otros objetos redondeados y claros del campo.
+
+\subsection{Clasificación de equipos con un tercer grupo para el árbitro}
+
+Como se documentó en la sección~\ref{sec:fundamentos-kmeans}, la
+clasificación de equipos por K-means asume $k=2$ grupos, lo que
+provoca que el árbitro (que tiene una camiseta de color distinto a la de ambos
+equipos) se asigne incorrectamente al centroide de color más próximo. Se
+valoró una variante con $k=3$, combinada con una heurística adicional que
+etiquetaría como árbitro al grupo con menos detecciones totales (teniendo en cuenta
+que
+solo hay un árbitro principal frente a unos once jugadores por equipo),
+pero no llegó a implementarse porque el enfoque con $k=2$ ya ofrecía resultados
+suficientemente buenos para los objetivos de este proyecto, y la mejora
+quedó pospuesta como línea de trabajo futuro
+(capítulo~\ref{cap:conclusiones}) en lugar de invertir tiempo adicional en
+una heurística no estrictamente necesaria en esta fase.
+
+\subsection{Homografía generalizada a toda la secuencia}
+
+La homografía real (sección~\ref{sec:implementacion-homografia}) se ha
+limitado deliberadamente, desde el principio, a los tramos concretos de
+cámara estable identificados en cada secuencia de demostración, y nunca se
+intentó generalizarla al resto del dataset. La razón es estructural, no de
+tiempo disponible: la mayoría de las secuencias de SoccerNet tienen
+movimiento de cámara continuo a lo largo de todo su vídeo,
+lo que exigiría recalcular la matriz de homografía de forma dinámica,
+frame a frame ( lo que es un problema de calibración de cámara automática
+considerablemente más complejo que el cálculo manual y estático empleado
+aquí, y que queda fuera del alcance de este proyecto). Acotar expresamente el
+alcance de esta técnica a una prueba de concepto, en lugar de forzar su
+aplicación al resto del dataset con resultados poco fiables, es coherente
+con el riesgo identificado y mitigado en la
+Tabla~\ref{tab:gestion-riesgos-tabla} del capítulo~\ref{cap:gestion}.

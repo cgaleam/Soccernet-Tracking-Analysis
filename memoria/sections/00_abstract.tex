@@ -1,0 +1,39 @@
+\chapter*{Abstract}
+
+Multi-object tracking (MOT) of players in football video is a necessary
+prerequisite for any automatic analysis of the game, such as heatmaps,
+distance covered or ball possession, but choosing a specific algorithm for
+that task requires comparing it on real football data rather than only on
+the generic person-tracking benchmarks it was originally designed for.
+This Final Degree Project addresses that comparison on SoccerNet-Tracking,
+a public football video dataset with precomputed detections, and proposes
+a complete system that goes from tracking to the extraction of
+interpretable sports metadata from the resulting trajectories.
+
+The system compares two classic association algorithms, ByteTrack and
+OC-SORT, evaluated with the standard TrackEval metrics (HOTA, MOTA, IDF1)
+on the training and test sets. On top of the optimal configuration of each
+algorithm, obtained through a systematic hyperparameter study, a second
+metadata extraction pipeline is built: team classification by jersey
+colour using K-means, position heatmaps, real distance and speed from a
+manually calibrated homography, and ball possession by proximity. The
+results, together with annotated videos, are finally presented in a web
+application.
+
+The processed dataset gathers 106 video sequences (57 training, 49 test)
+of 700 frames each, with precomputed detections of players, referees and
+the ball. Using the HOTA(0) metric (evaluated at a single overlap
+threshold), ByteTrack reaches 81.43 on test versus 80.92 for OC-SORT;
+however, under the standard integrated HOTA metric the result is clearly
+reversed on both sets (80.23 versus 73.27 on training; 75.43 versus 70.73
+on test), because OC-SORT reuses the dataset detections unmodified while
+ByteTrack interpolates them in its second association round. This
+discrepancy, documented and explained in detail in the report, is one of
+the most relevant results of the project: two equally legitimate ways of
+measuring the same system can lead to opposite conclusions about which
+algorithm is better.
+
+\vspace{.5cm}
+
+\textbf{Keywords:} SoccerNet, Multi-Object Tracking, Computer Vision,
+ByteTrack, OC-SORT, HOTA, Sports Analytics.

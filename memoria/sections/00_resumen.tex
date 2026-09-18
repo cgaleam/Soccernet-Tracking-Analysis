@@ -1,0 +1,43 @@
+\chapter*{Resumen}
+
+El seguimiento multiobjeto (\emph{multi-object tracking}, MOT) de jugadores
+en vídeo de fútbol es un paso previo necesario para cualquier análisis
+automático del juego como mapas de calor, distancia recorrida, posesión de
+balón, pero elegir un algoritmo concreto para esa tarea exige compararlo
+sobre datos reales de fútbol y no solo sobre los benchmarks genéricos de
+seguimiento de personas para los que se diseñó originalmente. Este Trabajo
+de Fin de Grado aborda esa comparación sobre SoccerNet-Tracking, un
+\emph{dataset} público de vídeo de fútbol con detecciones precomputadas, y
+propone un sistema completo que va desde el seguimiento hasta la
+extracción de metadatos deportivos interpretables a partir de las
+trayectorias resultantes.
+
+El sistema compara dos algoritmos de
+asociación clásicos, ByteTrack y OC-SORT, evaluados con las métricas
+estándar de TrackEval (HOTA, MOTA, IDF1) sobre los conjuntos de
+entrenamiento y de test. Sobre la configuración óptima de cada algoritmo,
+obtenida mediante un estudio sistemático de hiperparámetros, se construye
+un segundo pipeline de extracción de metadatos: clasificación de equipos
+por color de camiseta mediante K-means, mapas de calor de posiciones,
+distancia y velocidad reales a partir de una homografía calibrada
+manualmente, y posesión de balón por proximidad. Los resultados, junto con
+vídeos anotados, se exponen finalmente en una aplicación web.
+
+El conjunto de datos procesado reúne 106 secuencias de vídeo (57 de
+entrenamiento, 49 de test) de 700 fotogramas cada una y con
+detecciones precomputadas de jugadores, árbitros y balón. Con la métrica
+HOTA(0) (evaluada en un único umbral),
+ByteTrack alcanza 81,43 en test frente a 80,92 de OC-SORT; sin embargo,
+con la métrica HOTA integrada estándar el resultado se invierte con
+claridad en ambos conjuntos (80,23 frente a 73,27 en entrenamiento; 75,43
+frente a 70,73 en test), porque OC-SORT reutiliza las detecciones del
+\emph{dataset} sin modificarlas mientras que ByteTrack sí las interpola en
+su segunda ronda de asociación. Esta discrepancia, documentada y explicada
+en detalle en la memoria, es uno de los resultados más relevantes del
+trabajo: dos formas igual de legítimas de medir el mismo sistema pueden
+llevar a conclusiones opuestas sobre qué algoritmo es mejor.
+
+\vspace{.5cm}
+
+\textbf{Palabras clave:} SoccerNet, Seguimiento Multiobjeto, Visión
+Artificial, ByteTrack, OC-SORT, HOTA, Análisis Deportivo.

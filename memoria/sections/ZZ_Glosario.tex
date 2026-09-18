@@ -1,0 +1,152 @@
+\chapter*{Glosario de términos}
+\addcontentsline{toc}{chapter}{Glosario de términos}
+\label{cap:glosario}
+
+Este glosario recoge, ordenados alfabéticamente, los términos técnicos y
+las siglas usadas a lo largo de la memoria que pueden no resultar
+familiares fuera del ámbito del seguimiento multiobjeto y la visión por
+computador. Cada capítulo introduce y explica estos conceptos la primera
+vez que aparece.
+
+\begin{description}
+\item[AssA (\emph{Association Accuracy})] Componente de HOTA que mide la
+  calidad de la asociación entre detecciones de un mismo objeto a lo largo
+  del tiempo, con independencia de si la detección en sí es correcta
+  (sección~\ref{subsec:fundamentos-hota}).
+
+\item[ByteTrack] Algoritmo de \emph{tracking-by-detection} que asocia
+  también las detecciones de baja confianza en una segunda ronda, en vez
+  de descartarlas directamente (sección~\ref{subsec:fundamentos-bytetrack}).
+
+\item[\texttt{det.txt}] Fichero de detecciones precomputadas de una
+  secuencia de SoccerNet-Tracking, en formato MOT: una fila por detección,
+  con \emph{frame}, coordenadas de la caja delimitadora y confianza
+  (sección~\ref{subsec:fundamentos-soccernet-tracking}).
+
+\item[DetA (\emph{Detection Accuracy})] Componente de HOTA que mide la
+  calidad de las detecciones por sí solas, sin tener en cuenta si están
+  bien asociadas entre \emph{frames} (sección~\ref{subsec:fundamentos-hota}).
+
+\item[\emph{Fourcc}] Código de cuatro caracteres que identifica el códec
+  de vídeo usado al codificar un fichero con \texttt{OpenCV}; el proyecto
+  usa \texttt{avc1} (H.264) en vez de \texttt{mp4v} para que los vídeos se
+  reproduzcan en el navegador (problema P17,
+  Tabla~\ref{tab:impl-problemas}).
+
+\item[\emph{Ground truth}] Anotación de referencia considerada correcta,
+  usada para evaluar un sistema; en SoccerNet-Tracking, el fichero
+  \texttt{gt.txt} con las posiciones e identidades reales de cada jugador
+  (sección~\ref{subsec:fundamentos-soccernet-tracking}).
+
+\item[Homografía] Transformación geométrica que proyecta puntos de un
+  plano (la imagen de la cámara) a otro plano (el campo real), usada en
+  este proyecto para convertir posiciones en píxeles a metros reales
+  (sección~\ref{sec:fundamentos-homografia}).
+
+\item[HOTA (\emph{Higher Order Tracking Accuracy})] Métrica de evaluación
+  de \emph{tracking} que combina DetA y AssA, promediada sobre un rango de
+  umbrales de IoU (0.05 a 0.95); en este proyecto se distingue
+  explícitamente de HOTA(0) (sección~\ref{subsec:fundamentos-hota},
+  sección~\ref{subsec:impl-hota-vs-hota0}).
+
+\item[HOTA(0)] Notación usada en esta memoria para el valor de HOTA
+  evaluado en un único umbral de IoU (0.5), en vez del promedio integrado
+  de la métrica HOTA estándar; la distinción entre ambas es uno de los
+  hallazgos centrales del proyecto
+  (sección~\ref{subsec:impl-hota-vs-hota0}).
+
+\item[Húngaro, algoritmo] Algoritmo de optimización combinatoria que
+  resuelve el problema de asignación óptima entre dos conjuntos --en este
+  contexto, qué detección se asocia a qué \emph{track}-- en tiempo
+  polinómico (sección~\ref{subsec:fundamentos-hungaro}).
+
+\item[IDF1] Métrica de evaluación de \emph{tracking} centrada en la
+  identidad: mide qué proporción de las detecciones se asocian al
+  identificador correcto a lo largo de toda la secuencia
+  (sección~\ref{sec:fundamentos-metricas}).
+
+\item[IDSW (\emph{ID Switches})] Número de veces que un algoritmo de
+  \emph{tracking} cambia por error el identificador asignado a un mismo
+  objeto real (sección~\ref{sec:fundamentos-metricas}).
+
+\item[IoU (\emph{Intersection over Union})] Medida de solapamiento entre
+  dos cajas delimitadoras: el área de su intersección dividida entre el
+  área de su unión, usada tanto para asociar detecciones como para
+  evaluar \emph{trackers} (sección~\ref{subsec:fundamentos-iou}).
+
+\item[K-means] Algoritmo de agrupamiento no supervisado que reparte un
+  conjunto de puntos en $k$ grupos según su cercanía; usado en este
+  proyecto para clasificar jugadores por equipo a partir del color de su
+  camiseta (sección~\ref{sec:fundamentos-kmeans}).
+
+\item[Kalman, filtro de] Algoritmo recursivo de estimación que predice el
+  estado futuro de un sistema (aquí, la posición de un jugador) y lo
+  corrige con cada nueva observación, base de los algoritmos de
+  \emph{tracking-by-detection} usados en este proyecto
+  (sección~\ref{subsec:fundamentos-kalman}).
+
+\item[KDE (\emph{Kernel Density Estimation})] Técnica estadística para
+  estimar la densidad de un conjunto de puntos de forma continua, usada
+  para generar los mapas de calor de posiciones a partir de las
+  trayectorias de \emph{tracking} (sección~\ref{sec:implementacion-metadatos}).
+
+\item[MOT (\emph{Multi-Object Tracking})] Seguimiento multiobjeto: la
+  tarea de detectar y seguir la identidad de múltiples objetos a la vez a
+  lo largo de una secuencia de vídeo, tarea central de este proyecto
+  (sección~\ref{sec:fundamentos-mot}).
+
+\item[MOTA (\emph{Multiple Object Tracking Accuracy})] Métrica clásica de
+  evaluación de \emph{tracking} que combina falsos positivos, falsos
+  negativos y cambios de identidad en un único valor
+  (sección~\ref{sec:fundamentos-metricas}).
+
+\item[MVP (\emph{Minimum Viable Product})] Versión mínima funcional de un
+  producto, usada aquí para describir el alcance de la aplicación web
+  implementada: fiel al diseño planificado, sin todas las ampliaciones
+  posibles (sección~\ref{sec:implementacion-web}).
+
+\item[OC-SORT (\emph{Observation-Centric SORT})] Variante de SORT que
+  reutiliza las detecciones originales sin interpolarlas y corrige la
+  deriva del filtro de Kalman durante oclusiones prolongadas
+  (sección~\ref{subsec:fundamentos-ocsort}).
+
+\item[Re-ID (re-identificación)] Técnica que usa la apariencia visual de
+  un objeto, además de su posición, para reasociar su identidad tras una
+  oclusión; considerada y descartada para este proyecto
+  (sección~\ref{subsec:fundamentos-reid}).
+
+\item[\emph{Seqmap}] Fichero que indica a \texttt{TrackEval} qué
+  secuencias evaluar en una ejecución
+  (sección~\ref{sec:manual-evaluacion}).
+
+\item[SORT (\emph{Simple Online and Realtime Tracking})] Algoritmo
+  clásico de \emph{tracking-by-detection} que combina el filtro de Kalman
+  con el algoritmo húngaro sobre IoU, base de la que parte OC-SORT
+  (sección~\ref{subsec:fundamentos-sort}).
+
+\item[SPA (\emph{Single Page Application})] Aplicación web que carga una
+  única página HTML y actualiza su contenido dinámicamente en el
+  navegador, sin recargas completas; arquitectura de la aplicación web de
+  este proyecto (sección~\ref{sec:diseno-web}).
+
+\item[SoccerNet-Tracking] \emph{Dataset} público de vídeo de fútbol con
+  detecciones precomputadas y \emph{ground truth}, usado como base de
+  datos de este proyecto
+  (sección~\ref{subsec:fundamentos-soccernet-tracking}).
+
+\item[\emph{Split}] Cada una de las particiones del \emph{dataset}
+  (entrenamiento, test) sobre las que se ejecutan y evalúan los
+  algoritmos por separado (sección~\ref{subsec:fundamentos-soccernet-tracking}).
+
+\item[\emph{Tracking-by-detection}] Enfoque de seguimiento multiobjeto
+  que parte de detecciones ya calculadas en cada \emph{frame} y se centra
+  en asociarlas entre sí, en vez de detectar y seguir a la vez
+  (sección~\ref{sec:fundamentos-tbd}).
+
+\item[TrackEval] Librería de referencia usada en este proyecto para
+  calcular HOTA, MOTA e IDF1 de forma estandarizada
+  (sección~\ref{sec:implementacion-evaluacion}).
+
+\item[\emph{Tracker}] Nombre genérico para un algoritmo de seguimiento
+  multiobjeto; en este proyecto, ByteTrack u OC-SORT.
+\end{description}

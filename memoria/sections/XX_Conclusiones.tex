@@ -1,0 +1,153 @@
+\chapter{Conclusiones y trabajo futuro}\label{cap:conclusiones}
+
+Este capítulo cierra la memoria repasando en qué medida se han alcanzado
+los objetivos planteados en el capítulo~\ref{cap:introduccion}, sintetizando
+los resultados más relevantes del proyecto, y proponiendo las líneas de
+trabajo futuro, algunas de las cuales se han ido señalando a lo largo del documento.
+
+\section{Cumplimiento de los objetivos}
+\label{sec:conclusiones-objetivos}
+
+Los once objetivos específicos planteados se han cumplido en su totalidad.
+
+OE-01 a OE-05 el núcleo de la comparación de algoritmos: estudiar el
+dataset, implementar ByteTrack y OC-SORT, ejecutarlos sobre la totalidad de
+train y test, evaluarlos con las métricas estándar del campo y realizar un
+estudio sistemático de hiperparámetros, se han cumplido de forma directa
+y están documentados con resultados reales. OE-06 a OE-09
+se han cumplido igualmente, con la salvedad, ya señalada en su
+momento, de que OE-08 se resolvió como prueba de concepto sobre dos tramos
+concretos de cámara estable y no como una solución general al movimiento
+continuo de cámara del resto del dataset.
+OE-10, documentar de forma
+honesta las limitaciones y los enfoques descartados, no es un objetivo que
+se cumpla en un capítulo concreto sino un criterio aplicado a todo el documento,
+desde la tabla de problemas de entorno del
+capítulo~\ref{cap:implementacion} hasta el propio capítulo~\ref{cap:uso-ia}.
+OE-11, desarrollar una aplicación web como demostrador visual e
+interactivo, se ha completado como un MVP funcional
+fiel al diseño planificado en el
+capítulo~\ref{cap:diseno}, aunque limitado a las tres secuencias de
+demostración usadas a lo largo de la memoria y no al dataset completo.
+
+\section{Resultados principales}
+\label{sec:conclusiones-resultados}
+
+Este proyecto como resultado ha dado una comparativa entre dos algoritmos de tracking: ByteTrack y OC-SORT. 
+El resultado más relevante de este proyecto no es una cifra aislada, sino la comparativa entre ByteTrack y OC-SORT depende
+de forma decisiva de qué variante de HOTA se use para medirla.
+Bajo HOTA(0)  ByteTrack
+aventaja a OC-SORT en el conjunto de test; bajo HOTA integrada ese resultado se
+invierte con claridad en ambos conjuntos, porque OC-SORT reutiliza las
+detecciones del \emph{dataset} sin modificarlas mientras que ByteTrack las
+interpola en su segunda ronda de asociación, lo que penaliza a ByteTrack en
+los umbrales más estrictos que HOTA(0) no llega a evaluar. Que dos formas
+igual de legítimas de medir el mismo sistema lleven a conclusiones
+opuestas sobre qué algoritmo es mejor no es un detalle menor de este
+proyecto, es uno de sus resultados.
+
+Sobre la configuración óptima resultante, el pipeline de metadatos
+ha demostrado ser aplicable sobre
+secuencias reales de SoccerNet, con resultados numéricos consistentes
+entre sí: por ejemplo, el porcentaje de posesión del equipo dominante en
+SNMOT-116 se mantiene prácticamente igual pese a partir de
+asociaciones de tracking distintas.
+Finalmente, la aplicación web ha demostrado que ese mismo pipeline puede
+exponerse como una interfaz interactiva y visual para el usuario.
+
+\section{Limitaciones}
+\label{sec:conclusiones-limitaciones}
+
+Las limitaciones de este proyecto se han ido documentando explícitamente en
+los capítulos correspondientes del proyecto, pero se resumen aquí de forma conjunta:
+
+\begin{itemize}
+  \item El estudio de hiperparámetros completo se reporta en HOTA(0), no en
+        la métrica integrada usada en la comparativa principal
+        (sección~\ref{sec:pruebas-limitaciones}).
+  \item La comparativa de HOTA integrada usa los valores por defecto de
+        cada algoritmo, no sus configuraciones óptimas de hiperparámetros
+        (sección~\ref{sec:pruebas-limitaciones}).
+  \item La clasificación de equipos por K-means con $k=2$ asigna
+        incorrectamente al árbitro a uno de los dos equipos
+        (sección~\ref{sec:fundamentos-kmeans}).
+  \item La homografía real se ha limitado a dos tramos cortos de cámara
+        estable, no al dataset completo
+        (sección~\ref{sec:implementacion-homografia}).
+  \item La posesión de balón es una aproximación por proximidad espacial,
+        no una estadística táctica real
+        (sección~\ref{subsec:diseno-posesion}).
+  \item La detección del balón se basa en un filtro geométrico sobre las
+        detecciones del \emph{dataset}, no en un detector entrenado
+        específicamente para esa clase.
+  \item La aplicación web cubre únicamente las tres secuencias de
+        demostración usadas en esta memoria, no el dataset completo para los metadatos.
+\end{itemize}
+
+\section{Trabajo futuro}
+\label{sec:conclusiones-futuro}
+
+De las limitaciones anteriores, y de los enfoques explorados y descartados
+a lo largo del proyecto, se
+derivan directamente las líneas de continuación más naturales de este
+trabajo:
+
+\begin{itemize}
+  \item \textbf{Recalcular el estudio de hiperparámetros con HOTA
+        integrada}: repetir el barrido completo de ambos algoritmos
+        con la métrica integrada en
+        vez de HOTA(0), y evaluar si la configuración óptima resultante
+        coincide con la ya encontrada.
+  \item \textbf{Evaluar las configuraciones óptimas con HOTA integrada}:
+        confirmar si la ventaja de OC-SORT sobre ByteTrack observada con
+        los valores por defecto de cada algoritmo se mantiene, se amplía o
+        se reduce al usar sus configuraciones óptimas de hiperparámetros.
+  \item \textbf{Incorporar algoritmos con re-identificación visual
+        (Re-ID)}, como DeepSORT,
+        aunque previsiblemente con un margen de mejora menor que en otros
+        dominios de MOT, dada la escasa discriminabilidad visual entre
+        compañeros de un mismo equipo.
+  \item \textbf{Clasificación de equipos con un tercer grupo para el
+        árbitro} ($k=3$, combinado con una heurística sobre el tamaño de
+        cada grupo), para eliminar el sesgo que introduce actualmente en
+        los mapas de calor por equipo y en la posesión de balón.
+  \item \textbf{Homografía generalizada y dinámica}, que recalcule la
+        matriz de proyección frame a frame para tramos con movimiento de
+        cámara continuo, en lugar de limitarse a tramos concretos con
+        cámara estática.
+  \item \textbf{Extender la aplicación web al resto del dataset}, generando
+        el paquete de metadatos y vídeos anotados para más secuencias o
+        para su totalidad en lugar de las tres actuales, y explorando un
+        detector de balón entrenado que sustituya al filtro geométrico
+        actual como base de una posesión más fiable.
+  \item \textbf{Tracking sobre un vídeo subido por el usuario}: permitir que
+        el propio usuario suba un vídeo de fútbol arbitrario a la
+        aplicación web y ejecutar el pipeline de tracking sobre él, en
+        lugar de limitarse a las secuencias de demostración ya procesadas.
+        A diferencia del resto de este proyecto, que parte de detecciones
+        ya calculadas por SoccerNet (sección~\ref{sec:intro-problema}), esta
+        vía exigiría incorporar primero un detector de objetos propio, ya
+        que un vídeo arbitrario no viene con \texttt{det.txt}. Es
+        técnicamente viable con el enfoque ya desarrollado, pero queda
+        como línea futura.
+  \item \textbf{Participación real en el \emph{leaderboard} oficial de
+        SoccerNet}: el dataset incluye un tercer split, \emph{challenge},
+        sin \texttt{gt.txt},
+        pensado precisamente para enviar resultados al servidor oficial de
+        evaluación y obtener una comparación pública y directa con otros
+        equipos, en la línea de los ya publicados en ediciones anteriores
+        del reto \citep{cioppa2023soccernetchallenges}, ofreciendo esta vez
+        una cifra oficial en lugar de la referencia de contexto de la
+        sección~\ref{sec:fundamentos-relacionados}.
+\end{itemize}
+
+\section{Reflexión final}
+\label{sec:conclusiones-reflexion}
+
+Este proyecto partió de una pregunta relativamente acotada
+ y ha terminado abarcando un sistema completo, desde el
+seguimiento de jugadores hasta la extracción de metadatos deportivos
+interpretables y su exposición en una aplicación web. La constatación de que la propia pregunta
+\enquote{qué algoritmo es mejor}depende de una decisión metodológica, la métrica
+elegida para responderla, que resultó menos trivial de lo que parecía al
+principio del proyecto.

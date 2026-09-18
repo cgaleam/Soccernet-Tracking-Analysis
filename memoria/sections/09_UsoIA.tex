@@ -1,0 +1,134 @@
+\chapter{Uso de inteligencia artificial}
+\label{cap:uso-ia}
+
+Durante el desarrollo de este Trabajo de Fin de Grado se utilizaron
+herramientas de inteligencia artificial generativa como apoyo al desarrollo
+de software, al análisis del código existente y a la redacción de esta
+memoria. Este capítulo detalla en qué medida y de qué forma se
+han utilizado, siguiendo el mismo criterio de transparencia aplicado al
+resto del documento. El uso ha sido sobre distintas áreas del proyecto. Las 
+decisiones de diseño y de desarrollo han sido siempre del autor y del tutor
+mediante su orientación. Sin embargo, las herramientas de IA han sido un apoyo en la redacción de código y 
+resolución de dudas de implementación, así como en la redacción de esta memoria.
+
+\section{Herramientas}
+\label{sec:ia-herramientas}
+
+La herramienta empleada ha sido \textbf{Claude Code}.
+
+Conviene distinguir dos usos claramente diferenciados a lo largo del
+proyecto, que se detallan en las secciones siguientes:
+
+\begin{itemize}
+  \item Como asistente de desarrollo de software, en la
+        construcción de la aplicación web y revisor de scripts del pipeline.
+  \item Como revisor y en casos redactor partes de esta memoria, a partir de una base del autor y de las notas
+         que el autor ha tomado durante el desarrollo del proyecto y del análisis directo del código del
+        proyecto.
+\end{itemize}
+
+No se ha usado ninguna otra herramienta de IA generativa en ningún punto del proyecto.
+
+\section{Uso en el desarrollo de software}
+\label{sec:ia-desarrollo}
+
+El pipeline offline en Python es trabajo previo del autor, desarrollado de
+forma independiente antes de emplear Claude Code en este proyecto. En esa
+parte, el papel de la herramienta se ha limitado a eer, analizar y corregir o editar
+el código ya existente para poder documentarlo con precisión en esta
+memoria (sección~\ref{sec:ia-memoria}), no a escribirlo.
+
+El uso de Claude Code como herramienta de desarrollo activo se concentra en
+la aplicación web (sección~\ref{sec:implementacion-web}), construida 
+durante este proyecto con su ayuda:
+
+\begin{itemize}
+  \item El paquete \texttt{src/web\_export/} --\texttt{compute\_metadata.py}
+        y \texttt{export\_bundle.py}-- se escribió con Claude Code a partir
+        de una instrucción explícita: reutilizar la lógica ya validada de
+        \texttt{src/metadata/} sin modificar ni duplicar esos scripts,
+        parametrizándola por algoritmo. La verificación de que la lógica
+        reproducida era efectivamente equivalente se hizo
+        contrastando el código generado contra los scripts originales.
+  \item Todo el código de base de \texttt{frontend/} se generó igualmente con Claude Code, a partir de
+        decisiones de diseño explícitas del autor: el \emph{stack}
+        tecnológico (React, Vite, TypeScript), el alcance del MVP fiel al
+        boceto ya planificado en el capítulo~\ref{cap:diseno}, y una ronda
+        posterior de ajustes visuales concretos (color de acento, cabecera
+        con logotipo, alineación de tablas) solicitados de forma iterativa
+        tras revisar la aplicación en ejecución.
+  \item Antes de implementar la aplicación web se detectó, durante la fase
+        de planificación con la herramienta, un desajuste entre el diseño
+        original y los datos realmente disponibles. Se plantearon
+        al autor dos alternativas.
+  \item Durante la implementación se encontraron y corrigieron con la
+        herramienta algunos problemas de implementación, como la incompatibilidad del
+        \emph{fourcc} \texttt{mp4v} de OpenCV con la reproducción de vídeo
+        en navegador, ya documentada como P17 en la
+        Tabla~\ref{tab:impl-problemas}.
+\end{itemize}
+
+En todos los casos, el código generado se ha ejecutado y verificado
+antes de darlo por válido, no
+se ha incorporado código sin comprobar que efectivamente hace lo que se le
+pidió.
+
+\section{Uso en documentación}
+\label{sec:ia-memoria}
+
+El uso de Claude Code en este proyecto ha sido en gran medida en la redacción y revisión de
+esta propia memoria.
+
+La herramienta ayudó en consultar ideas y alternativas para la estructura, la redacción de secciones y subsecciones, la revisión de estilo y
+la corrección de errores tipográficos y de sintaxis o reestructurar texto a formato LaTeX.
+En ningún caso se ha usado para generar contenido técnico o resultados que no hayan sido verificados por el autor.
+
+Todo con ayuda de una base de memoria que el autor fue construyendo poco a poco y unos documentos 
+de notas que el autor fue tomando durante el desarrollo del proyecto con todo detalle y del análisis directo del código del proyecto.
+
+\begin{itemize}
+  \item El hallazgo más relevante de todos los detectados durante esta
+        redacción es la distinción entre HOTA(0) y HOTA integrada
+        : tanto las notas del
+        autor como el propio script \texttt{summarize\_hyperparam.py}
+        habían usado sistemáticamente la columna \texttt{HOTA(0)} de
+        \texttt{TrackEval} bajo el nombre \enquote{HOTA}, lo que llevaba a una
+        conclusión que se
+        invierte con claridad al recalcular la comparativa con la métrica
+        HOTA integrada estándar. Este hallazgo
+        no estaba en las notas ni memoria originales: surgió de contrastar el código
+        de evaluación con la documentación oficial de \texttt{TrackEval}
+        al consultar con Claude la revisión de la parte de métricas en la documentación.
+\end{itemize}
+
+\section{Límites del uso de inteligencia artificial}
+\label{sec:ia-limites}
+
+Todo el contenido generado con Claude Code ha sido revisado y dirigido por
+el autor en cada paso, no aceptado de forma automática:
+
+\begin{itemize}
+  \item Los cambios de alcance o de diseño con más de una alternativa
+        razonable, por ejemplo, la decisión de generar metadatos de
+        OC-SORT en vez de recortar el selector de algoritmo de la
+        aplicación web, se plantearon
+        explícitamente al autor como una decisión suya, no se resolvieron
+        de forma autónoma por la herramienta.
+  \item Todos los datos numéricos, tablas y resultados presentados en esta
+        memoria proceden de ficheros realmente generados por el pipeline
+        del proyecto (\texttt{evaluation\_train/}, \texttt{evaluation\_test/},
+        \texttt{evaluation\_hyperparam/}, \texttt{metadata\_output/}), no de
+        estimaciones ni de contenido inventado por la IA.
+  \item Todo el código generado se ha ejecutado y su salida se ha
+        inspeccionado antes de incorporarla a la memoria o de darla por
+        válida (sección~\ref{sec:ia-desarrollo}); ningún resultado
+        cuantitativo de este documento se ha aceptado sin volver a
+        comprobar que procede realmente de la ejecución del sistema
+        descrito.
+\end{itemize}
+
+En conjunto, el criterio seguido ha sido que Claude Code actúe como
+herramienta de apoyo en la redacción y de desarrollo bajo dirección explícita del
+autor en algunas decisiones, y que ninguna afirmación de esta
+memoria se dé por buena sin haberla contrastado contra una
+fuente verificable del proyecto.

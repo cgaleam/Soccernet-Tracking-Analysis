@@ -1,0 +1,14 @@
+# Residuos de compilación LaTeX (se regeneran al compilar, no versionar)
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.lol
+missfont.log
+*.synctex.gz
+*.fls
+*.fdb_latexmk

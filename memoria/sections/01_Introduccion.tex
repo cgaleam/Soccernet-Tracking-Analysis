@@ -1,0 +1,218 @@
+\chapter{Introducción}
+\label{cap:introduccion}
+
+\section{Motivación}
+\label{sec:intro-motivacion}
+
+El análisis de datos es una disciplina de la informática que me apasiona, asi como 
+el deporte. El análisis de datos aplicado al deporte ha experimentado un crecimiento notable
+en la última década. Clubes, televisión, casas de apuestas y compañías de análisis
+deportivo invierten cada vez más recursos en extraer información objetiva del
+juego a partir del vídeo: distancias recorridas, mapas de calor,
+patrones tácticos o detección automática de eventos. Gran parte de esta
+información depende de una tarea previa fundamental: saber, en cada instante,
+dónde está cada jugador y quién es. Partiendo de esa base, posteriormente se
+pueden calcular distintas métricas de interés para el análisis del partido.
+
+Ese problema, conocido en visión por computador como \emph{seguimiento
+multiobjeto} o \emph{Multi-Object Tracking} (MOT), es especialmente exigente
+en un partido de fútbol: veintidós jugadores más árbitros y balón se mueven de
+forma simultánea, se cruzan constantemente, se ocluyen entre sí y comparten
+una apariencia muy similar entre compañeros de equipo (misma camiseta, tallas
+y complexiones parecidas). Estas condiciones convierten al fútbol en un
+escenario particularmente duro para evaluar algoritmos de tracking, mucho más
+que los entornos de vigilancia urbana o conducción autónoma para los que
+originalmente se diseñaron muchos de estos algoritmos.
+
+Este proyecto nace de aplicar y comparar de forma rigurosa
+algoritmos de seguimiento multiobjeto sobre vídeo real de partidos de fútbol
+profesional, y comprobar hasta qué punto la información de trayectorias que
+producen puede convertirse en metadatos deportivos útiles, sin necesidad de instrumentación adicional
+en el terreno de juego, únicamente a partir del vídeo.
+
+\section{Contexto}
+\label{sec:intro-contexto}
+
+SoccerNet es un conjunto de datos y una serie de competiciones académicas
+centradas en el análisis automático de vídeo de fútbol, con múltiples tareas
+publicadas (reconocimiento de acciones, segmentación de cámara, reconocimiento
+de dorsales, seguimiento de jugadores, entre otras). Este proyecto se apoya en
+la tarea \textbf{SoccerNet-Tracking}, que proporciona secuencias de vídeo de
+partidos profesionales descompuestas en frames individuales, junto con
+detecciones de personas y balón ya calculadas (\texttt{det.txt}) y, para los
+conjuntos de entrenamiento y test, la posición e identidad real de cada
+jugador en cada frame (\texttt{gt.txt}), que sirve como referencia para medir
+el rendimiento de los algoritmos.
+
+El uso de un dataset público y con un formato estándar permite que los resultados obtenidos en
+este proyecto sean comparables con los de otros equipos de investigación, y
+que la evaluación se realice con las mismas métricas que utiliza la propia
+comunidad de SoccerNet en su tabla de clasificación oficial.
+
+\section{El problema}
+\label{sec:intro-problema}
+
+El seguimiento multiobjeto consiste en asignar, a cada objeto detectado en un
+vídeo, una identidad que se mantenga consistente a lo largo de todos los
+frames en los que ese objeto sea visible, incluso cuando desaparece
+temporalmente de la imagen, por ejemplo, al quedar oculto detrás de otro
+jugador y vuelve a aparecer poco después. Un buen algoritmo de tracking debe
+resolver simultáneamente dos problemas relacionados pero distintos:
+
+\begin{itemize}
+  \item \textbf{Detección}: encontrar dónde está cada objeto de interés en
+        cada frame. En este proyecto, jugadores, árbitros y balón.
+  \item \textbf{Asociación}: decidir qué detección de un frame corresponde a
+        qué identidad ya existente de un frame anterior, o si se trata de un
+        objeto nuevo.
+\end{itemize}
+
+Es importante delimitar aquí, desde el principio, el alcance exacto de este
+proyecto: el dataset SoccerNet-Tracking proporciona las detecciones ya
+calculadas para cada frame (\texttt{det.txt}). Por tanto, la tarea abordada es
+específicamente la de \textbf{asociación}: mantener identidades
+consistentes a partir de un conjunto de detecciones dado y no la de
+detección de jugadores desde cero a partir de la imagen. Esta
+decisión, natural dado el planteamiento del dataset, permite centrar el
+esfuerzo y la comparativa en los algoritmos de tracking propiamente dichos
+(el componente de asociación), que es donde reside la principal diferencia
+entre los distintos métodos evaluados. Esta distinción se retoma con más
+detalle en el capítulo~\ref{cap:analisis}.
+
+\section{Objetivos}
+\label{sec:intro-objetivos}
+
+\subsection{Objetivo general}
+
+Una vez definidas las detecciones del dataset SoccerNet, se propone evaluar y comparar distintos algoritmos de seguimiento multiobjeto sobre
+secuencias reales de partidos de fútbol del dataset SoccerNet, y explorar
+en qué medida las trayectorias resultantes permiten extraer metadatos
+deportivos de utilidad para el análisis de un partido.
+
+\subsection{Objetivos específicos}
+
+A partir de este objetivo general se han definido los siguientes objetivos
+específicos:
+
+\begin{itemize}
+  \item \textbf{OE-01:} Estudiar la estructura del dataset
+        SoccerNet-Tracking (secuencias de frames, detecciones precomputadas
+        y \emph{ground truth}) y delimitar la tarea abordada como un
+        problema de asociación en mayor medida que de detección.
+  \item \textbf{OE-02:} Implementar varios algoritmos de tracking de tipo
+        \emph{tracking-by-detection}, incluyendo un
+        filtrado geométrico que separe el balón de los jugadores antes de
+        la asociación.
+  \item \textbf{OE-03:} Ejecutar los algoritmos escogidos (\textbf{ByteTrack} y
+        \textbf{OC-SORT}) sobre la totalidad de las
+        secuencias de los conjuntos de entrenamiento y de test del dataset.
+  \item \textbf{OE-04:} Evaluar ambos algoritmos con las métricas estándar
+        del campo (HOTA, MOTA, IDF1) mediante \texttt{TrackEval}, comparando
+        su comportamiento entre el conjunto de entrenamiento y el de test.
+  \item \textbf{OE-05:} Realizar un estudio sistemático de hiperparámetros
+        de cada algoritmo, variando un parámetro a la vez, y determinar una
+        configuración óptima para cada uno de ellos.
+  \item \textbf{OE-06:} Diseñar y aplicar un método de clasificación de
+        jugadores por equipo a partir del color dominante de la camiseta
+        mediante K-means.
+  \item \textbf{OE-07:} Generar mapas de calor de ocupación del campo a
+        partir de las trayectorias obtenidas, tanto de forma global como
+        separados por equipo.
+  \item \textbf{OE-08:} Calcular una homografía real sobre tramos de vídeo
+        con cámara estable, como prueba de concepto para estimar la
+        distancia recorrida y la velocidad de los jugadores en unidades
+        reales.
+  \item \textbf{OE-09:} Estimar la posesión del balón por proximidad
+        espacial entre el balón y el jugador más cercano, y si es posible, 
+        generar un resumen de posesión de balón por jugador y
+        agregarla por equipo.
+  \item \textbf{OE-10:} Documentar las limitaciones
+        técnicas encontradas en cada etapa del proyecto, incluyendo
+        enfoques explorados y descartados, de modo que la memoria refleje
+        fielmente tanto lo conseguido como las dificultades reales del
+        proceso.
+  \item \textbf{OE-11:} Desarrollar una aplicación web que sirva como
+        demostrador visual e interactivo de los resultados del proyecto obtenidos,
+        permitiendo explorar los
+        resultados de tracking y el análisis de datos generado. Tambien se
+        destinada a personas que no sean expertas en el área para facilitar
+        su comprensión y visualización.
+\end{itemize}
+
+\section{Alcance y delimitación del proyecto}
+\label{sec:intro-alcance}
+
+Como se ha introducido en la sección~\ref{sec:intro-problema}, este proyecto
+parte de las detecciones del dataset y se centra en la etapa de
+asociación (tracking), no en el diseño de un detector de objetos propio. De
+todas formas, conviene precisar otros límites del proyecto desde el
+principio:
+
+\begin{itemize}
+  \item Los algoritmos comparados corresponden a la familia de métodos
+        \emph{tracking-by-detection} clásicos, sin componente de
+        reidentificación visual profunda (\emph{re-ID}); la incorporación de
+        algoritmos con re-ID se plantea como posible ampliación
+        (véase capítulo~\ref{cap:conclusiones}).
+  \item La proyección de posiciones de píxel a coordenadas reales del campo
+        se realiza mediante dos enfoques de distinta fiabilidad: una
+        aproximación por rango observado (sin calibración de cámara), usada
+        de forma general, y una homografía real calculada manualmente sobre
+        tramos concretos con cámara estable, usada como prueba de concepto
+        para el cálculo de distancia y velocidad. Ambos enfoques, y sus
+        limitaciones, se detallan en el capítulo~\ref{cap:implementacion}.
+  \item La posesión del balón se estima por proximidad espacial entre el
+        balón detectado y el jugador más cercano, una aproximación razonable
+        pero distinta del concepto de posesión que manejaría un analista
+        táctico humano.
+\end{itemize}
+
+\section{Estructura del documento}
+\label{sec:intro-estructura}
+
+La memoria de este proyecto se organiza en los siguientes capítulos:
+
+\begin{itemize}
+  \item \textbf{Capítulo~\ref{cap:fundamentos} -- Fundamentos teóricos y
+        estado del arte.}
+        Presenta los conceptos teóricos necesarios para entender el
+        proyecto: el problema del seguimiento multiobjeto, los algoritmos
+        de tracking comparados, las métricas de evaluación empleadas, la
+        clasificación de jugadores por color y los fundamentos de la
+        homografía entre otros; y cierra situando este TFG frente a los
+        resultados del reto oficial de SoccerNet.
+  \item \textbf{Capítulo~\ref{cap:gestion} -- Gestión del proyecto.}
+        Describe la metodología de trabajo seguida, la planificación
+        temporal, la estructura de descomposición del trabajo, y una
+        estimación de los recursos y costes que habría requerido este
+        proyecto en un contexto profesional.
+  \item \textbf{Capítulo~\ref{cap:analisis} -- Análisis de requisitos.}
+        Recoge los actores del sistema, los requisitos de información,
+        funcionales y no funcionales, las reglas de negocio y los casos de
+        uso.
+  \item \textbf{Capítulo~\ref{cap:diseno} -- Diseño.}
+        Presenta la arquitectura general del sistema y las decisiones de
+        diseño tomadas.
+  \item \textbf{Capítulo~\ref{cap:implementacion} -- Implementación.}
+        Detalla cómo se han implementado el tracking, la evaluación, el
+        estudio de hiperparámetros, el pipeline de metadatos y la
+        aplicación web, incluyendo los problemas técnicos encontrados y los
+        enfoques que se probaron y no funcionaron.
+  \item \textbf{Capítulo~\ref{cap:pruebas} -- Resultados.}
+        Recoge la comparativa final entre ByteTrack y OC-SORT, los
+        resultados del estudio de hiperparámetros y del pipeline de
+        metadatos, y las limitaciones detectadas en cada uno.
+  \item \textbf{Capítulo~\ref{cap:manual} -- Manual de despliegue.}
+        Explica paso a paso cómo instalar, configurar y ejecutar el
+        sistema, incluida la aplicación web.
+  \item \textbf{Capítulo~\ref{cap:uso-ia} -- Uso de inteligencia
+        artificial.} Detalla el uso realizado de herramientas de
+        inteligencia artificial durante el desarrollo del proyecto.
+  \item \textbf{Capítulo~\ref{cap:conclusiones} -- Conclusiones y trabajo
+        futuro.} Resume las
+        conclusiones del proyecto y plantea posibles líneas futuras de
+        trabajo.
+\end{itemize}
+
+Tras la bibliografía se incluye un glosario
+con los términos técnicos y las siglas usadas a lo largo de la memoria.

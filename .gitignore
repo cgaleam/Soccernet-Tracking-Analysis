@@ -3,3 +3,11 @@ data/
 __pycache__/
 .env
 venv_tfg/
+
+# Frontend (React + Vite): dependencias y build, regenerables con
+# "npm install" y "npm run build" respectivamente (sección 8.8 del manual)
+frontend/node_modules/
+frontend/dist/
+
+# Metadatos de macOS
+.DS_Store
