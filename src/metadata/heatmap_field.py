@@ -3,13 +3,10 @@ heatmap_field.py — Genera un mapa de calor de posiciones de jugadores
 proyectado sobre un campo de fútbol dibujado en 2D (vista cenital).
 
 Las posiciones del tracking (en píxeles de la cámara) se escalan usando
-el rango real observado de posiciones (min-max) y se proyectan sobre un
-campo estándar de 105x68 metros dibujado con matplotlib. Se usa una
+el rango real observado de posiciones y se proyectan sobre un
+campo estándar de 105x68 metros. Se usa una
 estimación de densidad (KDE) para obtener un degradado continuo que
-cubre todo el campo, incluyendo zonas de baja densidad (azul).
-
-LIMITACIÓN: se asume que el rango de posiciones observadas corresponde
-aproximadamente al área visible del campo.
+cubre todo el campo, incluyendo zonas de baja densidad.
 
 Uso:
     python src/metadata/heatmap_field.py
@@ -40,7 +37,7 @@ FIELD_WIDTH  = 68
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# CARGAR RESULTADOS DE TRACKING
+# Cargar resultados del tracking
 result_path = os.path.join(RESULTS_DIR, f"{SEQUENCE}.txt")
 
 if not os.path.exists(result_path):
@@ -90,7 +87,7 @@ y_range_scaled = (y_max - y_min) * scale
 y_offset = (FIELD_WIDTH - y_range_scaled) / 2
 field_y = field_y + y_offset
 
-# DIBUJAR CAMPO DE FÚTBOL 2D
+# Dbujar campo de fútbol
 def draw_field(ax):
     ax.add_patch(patches.Rectangle((0, 0), FIELD_LENGTH, FIELD_WIDTH,
                                      facecolor='#3a7d3a', zorder=0))
@@ -130,13 +127,13 @@ def draw_field(ax):
     ax.set_aspect('equal')
     ax.axis('off')
 
-# CALCULAR DENSIDAD CON KDE SOBRE EL CAMPO
+# Calcular densidad de posiciones usando KDE
 xx, yy = np.mgrid[0:FIELD_LENGTH:200j, 0:FIELD_WIDTH:130j]
 positions = np.vstack([field_x, field_y])
 kde = gaussian_kde(positions, bw_method=0.15)
 density = kde(np.vstack([xx.ravel(), yy.ravel()])).reshape(xx.shape)
 
-# GENERAR FIGURA DE CALOR
+# Generar figura
 fig, ax = plt.subplots(figsize=(14, 9))
 
 draw_field(ax)

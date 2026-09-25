@@ -1,12 +1,7 @@
 """
 heatmap_homography_demo.py — Genera un mapa de calor con homografía real
 sobre un campo 2D, para el mismo tramo y configuración usados en el
-cálculo de distancia/velocidad (ver distance_homography_demo_*.py).
-
-A diferencia de heatmap_field.py (aproximación por percentiles, todo el
-pipeline), aquí se usa la homografía real calculada con 4 puntos de
-referencia (esquinas del área pequeña), válida en la zona cercana a
-dichos puntos.
+cálculo de distancia/velocidad.
 
 LIMITACIÓN: la homografía es fiable solo en la zona próxima a los puntos
 de calibración. Track_ids que se alejan significativamente de esa zona
@@ -48,26 +43,12 @@ pixel_points_ref = np.array([
     [1408, 484],
 ], dtype=np.float32)
 
-# --- Para usar la config de SNMOT-118 en su lugar, comenta el bloque de
-#     arriba y descomenta este: ---
-# SEQUENCE    = "SNMOT-118"
-# FRAME_RANGE = (350, 650)
-# EXCLUDED_TRACK_IDS = [328, 274]
-# pixel_points_ref = np.array([
-#     [581, 343],
-#     [742, 330],
-#     [1189, 442],
-#     [1369, 414],
-# ], dtype=np.float32)
-
 FIELD_LENGTH = 105
 FIELD_WIDTH  = 68
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# ─────────────────────────────────────────
-# CALCULAR HOMOGRAFÍA
-# ─────────────────────────────────────────
+# Calcular homografía
 scale_x_img = ACTUAL_IMG_WIDTH / REFERENCE_IMG_WIDTH
 scale_y_img = ACTUAL_IMG_HEIGHT / REFERENCE_IMG_HEIGHT
 pixel_points = pixel_points_ref * [scale_x_img, scale_y_img]
@@ -86,9 +67,7 @@ def pixel_to_field(px, py):
     transformed = cv2.perspectiveTransform(point, H)
     return transformed[0][0][0], transformed[0][0][1]
 
-# ─────────────────────────────────────────
-# CARGAR TRACKING DEL TRAMO
-# ─────────────────────────────────────────
+# Cargar tracking del tramo
 result_path = os.path.join(RESULTS_DIR, f"{SEQUENCE}.txt")
 
 if not os.path.exists(result_path):
@@ -119,9 +98,7 @@ for excluded_id in EXCLUDED_TRACK_IDS:
 print(f"Secuencia: {SEQUENCE} | Tramo: {FRAME_RANGE}")
 print(f"Track IDs analizados: {len(tracks)} (excluidos: {EXCLUDED_TRACK_IDS})")
 
-# ─────────────────────────────────────────
-# PROYECTAR TODAS LAS POSICIONES A METROS
-# ─────────────────────────────────────────
+# Proyectar posiciones a metros
 field_x, field_y = [], []
 for track_id, points in tracks.items():
     for (frame_id, px, py) in points:
@@ -135,9 +112,7 @@ print(f"Total de posiciones proyectadas: {len(field_x)}")
 print(f"Rango X (metros): {field_x.min():.1f} - {field_x.max():.1f}")
 print(f"Rango Y (metros): {field_y.min():.1f} - {field_y.max():.1f}")
 
-# ─────────────────────────────────────────
-# DIBUJAR CAMPO DE FÚTBOL 2D
-# ─────────────────────────────────────────
+# Dibujar campo de fútbol
 def draw_field(ax):
     ax.add_patch(patches.Rectangle((0, 0), FIELD_LENGTH, FIELD_WIDTH,
                                      facecolor='#3a7d3a', zorder=0))
@@ -172,9 +147,7 @@ def draw_field(ax):
     ax.set_aspect('equal')
     ax.axis('off')
 
-# ─────────────────────────────────────────
-# KDE Y FIGURA
-# ─────────────────────────────────────────
+# Kde y figura
 xx, yy = np.mgrid[0:FIELD_LENGTH:200j, 0:FIELD_WIDTH:130j]
 positions = np.vstack([field_x, field_y])
 kde = gaussian_kde(positions, bw_method=0.15)

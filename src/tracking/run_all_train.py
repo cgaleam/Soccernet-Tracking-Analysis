@@ -4,17 +4,6 @@ y guarda los resultados en la carpeta results/
 
 Uso:
     python src/run_all.py
-
-Estructura de resultados generada:
-    results/
-    ├── bytetracker/
-    │   ├── SNMOT-060.txt
-    │   ├── SNMOT-061.txt
-    │   └── ...
-    └── ocsort/
-        ├── SNMOT-060.txt
-        ├── SNMOT-061.txt
-        └── ...
 """
 
 import os
@@ -25,21 +14,16 @@ import random
 from boxmot import BYTETracker, OCSORT
 
 # ─────────────────────────────────────────
-# CONFIGURACIÓN GLOBAL
+# CONFIGURACIÓN
 # ─────────────────────────────────────────
 DATASET_PATH = "../SoccerNet/tracking/train/"
 RESULTS_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'results_train')
 
-# ─────────────────────────────────────────
-# PARÁMETROS DE DETECCIÓN DEL BALÓN
-# ─────────────────────────────────────────
+# Parámetros de detección del balón
 BALL_MAX_AREA  = 2000
 BALL_MIN_RATIO = 0.7
 BALL_MAX_RATIO = 1.3
 
-# ─────────────────────────────────────────
-# UTILIDADES
-# ─────────────────────────────────────────
 colors = {}
 
 def get_color(track_id):
@@ -128,9 +112,7 @@ def run_tracker(tracker_factory, tracker_name, sequence_path, results_dir, show=
 
     print(f"  [OK] {sequence} → {result_path} ({len(results)} tracks)")
 
-# ─────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────
+# Main
 if __name__ == "__main__":
 
     # Obtener todas las secuencias disponibles

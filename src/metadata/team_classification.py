@@ -2,12 +2,6 @@
 team_classification.py — Clasifica a los jugadores en dos equipos
 a partir del color dominante de su camiseta, usando K-means clustering.
 
-Para cada bounding box del tracking:
-1. Se recorta la región superior del jugador (camiseta)
-2. Se extrae el color dominante con K-means (k=1) sobre los píxeles
-3. Se agrupan todos los colores dominantes de todos los jugadores en
-   2 clusters (k=2) usando K-means, asumiendo 2 equipos
-
 Resultado: un CSV con frame, track_id, team (0 o 1) por cada detección.
 
 Uso:
@@ -31,7 +25,7 @@ SEQUENCE = "SNMOT-118"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# CARGAR RESULTADOS DE TRACKING
+# Cargar resultados del tracking
 result_path = os.path.join(RESULTS_DIR, f"{SEQUENCE}.txt")
 
 if not os.path.exists(result_path):
@@ -55,7 +49,7 @@ with open(result_path) as f:
 print(f"Secuencia: {SEQUENCE}")
 print(f"Frames con tracks: {len(tracks_by_frame)}")
 
-# EXTRAER COLOR DOMINANTE DE CAMISETA POR DETECCIÓN
+# Extraer color de camiseta
 img_folder = os.path.join(DATASET_TEST, SEQUENCE, "img1")
 
 def get_jersey_color(frame_img, x, y, w, h):
@@ -91,7 +85,7 @@ def get_jersey_color(frame_img, x, y, w, h):
 
     return dominant_color
 
-# PROCESAR FRAMES (muestreo cada N frames para velocidad)
+# Procesar frames
 SAMPLE_EVERY = 5  # procesar 1 de cada 5 frames para acelerar
 
 detections = []  # (frame_id, track_id, color_bgr)
@@ -124,7 +118,7 @@ for frame_id in sampled_frames:
 
 print(f"Detecciones procesadas: {len(detections)}")
 
-# AGRUPAR EN 2 EQUIPOS CON K-MEANS (k=2)
+# Agrupar en 2 equipos usando K-means (k=2)
 colors = np.array([d[2] for d in detections])
 
 kmeans_teams = KMeans(n_clusters=2, n_init=10, random_state=42)
@@ -135,7 +129,7 @@ for i, center in enumerate(kmeans_teams.cluster_centers_):
     count = np.sum(team_labels == i)
     print(f"  Equipo {i}: BGR={center.astype(int)} — {count} detecciones")
 
-# GUARDAR RESULTADOS
+# Guardar resultados en CSV
 output_csv = os.path.join(OUTPUT_DIR, f"{SEQUENCE}_teams.csv")
 
 with open(output_csv, 'w') as f:
@@ -146,8 +140,7 @@ with open(output_csv, 'w') as f:
 
 print(f"\nResultados guardados en: {output_csv}")
 
-# DETERMINAR EQUIPO MAYORITARIO POR track_id
-# (un jugador puede tener varias muestras con team distinto por ruido)
+# Determinar el equipo final de cada track_id por mayoría de votos
 from collections import defaultdict, Counter
 
 track_teams = defaultdict(list)

@@ -1,13 +1,8 @@
 """
 heatmap_by_team.py — Genera mapas de calor de posiciones separados por equipo,
-proyectados sobre un campo de fútbol dibujado en 2D (vista cenital).
+proyectados sobre un campo de fútbol dibujado en 2D.
 
 Usa la clasificación de equipos generada por team_classification.py.
-Jugadores sin clasificación de equipo (no aparecieron en el muestreo)
-se excluyen del análisis.
-
-LIMITACIÓN: proyección aproximada sin homografía real, basada en el
-rango de posiciones observadas (ver heatmap_field.py).
 
 Uso:
     python src/metadata/heatmap_by_team.py
@@ -39,7 +34,7 @@ FIELD_WIDTH  = 68
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# CARGAR ASIGNACIÓN DE EQUIPOS
+# Cargar asignación de equipos
 teams_csv = os.path.join(TEAMS_DIR, f"{SEQUENCE}_teams_final.csv")
 
 if not os.path.exists(teams_csv):
@@ -53,13 +48,13 @@ with open(teams_csv, newline='') as f:
 
 print(f"Equipos cargados para {len(track_teams)} jugadores")
 
-# CARGAR DIMENSIONES DEL FRAME
+# Cargar dimensiones del frame
 img_folder = os.path.join(DATASET_TEST, SEQUENCE, "img1")
 images     = sorted(os.listdir(img_folder))
 first_frame = cv2.imread(os.path.join(img_folder, images[0]))
 h_img, w_img = first_frame.shape[:2]
 
-# CARGAR RESULTADOS DE TRACKING, SEPARADOS POR EQUIPO
+# Cargar resultados del tracking
 result_path = os.path.join(RESULTS_DIR, f"{SEQUENCE}.txt")
 
 if not os.path.exists(result_path):
@@ -118,7 +113,7 @@ def project(px_x, px_y):
     field_y = (y_max - px_y) * scale + y_offset
     return field_x, field_y
 
-# DIBUJAR CAMPO DE FÚTBOL 2D
+# Dibujar campo de fútbol
 def draw_field(ax):
     ax.add_patch(patches.Rectangle((0, 0), FIELD_LENGTH, FIELD_WIDTH,
                                      facecolor='#3a7d3a', zorder=0))
@@ -157,7 +152,7 @@ def draw_field(ax):
     ax.set_aspect('equal')
     ax.axis('off')
 
-# GENERAR FIGURA CON 2 SUBPLOTS (uno por equipo)
+# Generar figura
 fig, axes = plt.subplots(1, 2, figsize=(20, 8))
 
 team_cmaps = {0: 'Blues', 1: 'Reds'}

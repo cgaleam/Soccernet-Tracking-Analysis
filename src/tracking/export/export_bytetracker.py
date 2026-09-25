@@ -26,9 +26,7 @@ output_path = os.path.join(OUTPUT_DIR, f"{SEQUENCE}_bytetracker.mp4")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# ─────────────────────────────────────────
-# PARÁMETROS DE DETECCIÓN DEL BALÓN
-# ─────────────────────────────────────────
+# Parámetros de detección de balón
 BALL_MAX_AREA  = 2000
 BALL_MIN_RATIO = 0.7
 BALL_MAX_RATIO = 1.3
@@ -55,7 +53,7 @@ def get_color(track_id):
         )
     return colors[track_id]
 
-# CARGAR DETECCIONES (det.txt)
+# Cargar detecciones
 detections = {}
 
 with open(det_path) as f:
@@ -68,9 +66,7 @@ with open(det_path) as f:
             detections[frame_id] = []
         detections[frame_id].append((x, y, w, h, conf))
 
-# ─────────────────────────────────────────
-# INICIALIZAR TRACKER Y VIDEO WRITER
-# ─────────────────────────────────────────
+# Inicializar BYTETracker
 tracker = BYTETracker()
 images  = sorted(os.listdir(img_folder))
 
@@ -84,9 +80,7 @@ writer = cv2.VideoWriter(output_path, fourcc, 25.0, (w_vid, h_vid))
 print(f"Exportando {SEQUENCE} con BYTETracker...")
 print(f"Resolución: {w_vid}x{h_vid} | Frames: {len(images)}")
 
-# ─────────────────────────────────────────
-# BUCLE PRINCIPAL
-# ─────────────────────────────────────────
+# Bucle principal
 for i, img_name in enumerate(images, start=1):
     frame = cv2.imread(os.path.join(img_folder, img_name))
     if frame is None:
@@ -107,7 +101,7 @@ for i, img_name in enumerate(images, start=1):
     dets_np = np.array(player_dets, dtype=float) if player_dets else np.empty((0, 6))
     tracks  = tracker.update(dets_np, frame)
 
-    # ── Dibujar jugadores ──
+    # Dibujar jugadores
     for track in tracks:
         x1, y1, x2, y2, raw_id = int(track[0]), int(track[1]), int(track[2]), int(track[3]), int(track[4])
         track_id = get_sequential_id(raw_id)
@@ -116,14 +110,14 @@ for i, img_name in enumerate(images, start=1):
         cv2.putText(frame, f"ID {track_id}", (x1, y1 - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
 
-    # ── Dibujar balón ──
+    # Dibujar balón
     for (x, y, w, h) in ball_dets:
         x, y, w, h = int(x), int(y), int(w), int(h)
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
         cv2.putText(frame, "BALL", (x, y - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-    # ── Info en pantalla ──
+    # Info en pantalla
     cv2.putText(frame, f"BYTETracker | {SEQUENCE} | Frame {i}/{len(images)}",
                 (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
     cv2.putText(frame, f"Tracks activos: {len(tracks)}",

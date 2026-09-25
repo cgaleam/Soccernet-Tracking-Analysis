@@ -1,15 +1,11 @@
 """
 distance_homography_demo.py — Demuestra el cálculo de distancia y velocidad real
 usando una homografía manual, aplicada a un tramo corto con cámara estable
-de SNMOT-116 (frames 1-380, jugada de córner).
+de SNMOT-116).
 
 Los 4 puntos de referencia corresponden a las esquinas del área pequeña,
 con medidas FIFA estándar (5.5m x 18.32m), identificadas manualmente en
 un frame representativo del tramo estable.
-
-Esto es una PRUEBA DE CONCEPTO sobre un tramo concreto, no se aplica al
-pipeline general por el movimiento continuo de cámara en el resto de la
-secuencia (ver memoria, sección de limitaciones).
 
 Uso:
     python src/metadata/distance_homography_demo.py
@@ -33,7 +29,7 @@ FPS             = 25
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# PUNTOS DE REFERENCIA PARA HOMOGRAFÍA
+# Puntos de referencia para homografia
 # Imagen de referencia: 1456x816 (reescalar si tu frame es 1920x1080)
 REFERENCE_IMG_WIDTH  = 1456
 REFERENCE_IMG_HEIGHT = 816
@@ -70,7 +66,7 @@ print("\nPuntos de campo (metros):")
 for p in field_points:
     print(f"  {p}")
 
-# CALCULAR HOMOGRAFÍA
+# Calcicular homografía
 H, status = cv2.findHomography(pixel_points, field_points)
 
 print(f"\nMatriz de homografía:\n{H}")
@@ -81,7 +77,7 @@ def pixel_to_field(px, py):
     transformed = cv2.perspectiveTransform(point, H)
     return transformed[0][0][0], transformed[0][0][1]
 
-# VALIDACIÓN: reproyectar los 4 puntos originales y comprobar el error
+# Validación de la homografía
 print("\n--- Validación de la homografía ---")
 total_error = 0
 for i, (px, py) in enumerate(pixel_points):
@@ -92,7 +88,7 @@ for i, (px, py) in enumerate(pixel_points):
     print(f"  Punto {i}: proyectado=({fx:.2f}, {fy:.2f})  esperado=({expected[0]:.2f}, {expected[1]:.2f})  error={error:.3f}m")
 print(f"Error medio de reproyección: {total_error/4:.3f}m")
 
-# CARGAR TRACKING DEL TRAMO
+# Cargar tracking del tramo
 result_path = os.path.join(RESULTS_DIR, f"{SEQUENCE}.txt")
 
 if not os.path.exists(result_path):
@@ -125,7 +121,7 @@ with open(result_path) as f:
 
 print(f"\nTrack IDs en el tramo [{FRAME_RANGE[0]}-{FRAME_RANGE[1]}]: {len(tracks)}")
 
-# CALCULAR DISTANCIA Y VELOCIDAD 
+# Calcular distancia y velocidad
 SPEED_WINDOW = FPS  # 1 segundo
 
 results = []

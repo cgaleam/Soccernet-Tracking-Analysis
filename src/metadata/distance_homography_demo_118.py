@@ -7,10 +7,6 @@ Los 4 puntos de referencia corresponden a las esquinas del área pequeña,
 con medidas FIFA estándar (5.5m x 18.32m), identificadas manualmente en
 un frame representativo del tramo estable.
 
-PRUEBA DE CONCEPTO sobre un tramo concreto (ver también la demo de
-SNMOT-116 con jugada de córner). No se aplica al pipeline general por
-el movimiento continuo de cámara en el resto de la secuencia.
-
 Uso:
     python src/metadata/distance_homography_demo_118.py
 """
@@ -33,7 +29,7 @@ FPS             = 25
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# PUNTOS DE REFERENCIA PARA HOMOGRAFÍA
+# Puntos de referencia para homografía
 # Imagen de referencia: 1456x816 (reescalar si tu frame es 1920x1080)
 REFERENCE_IMG_WIDTH  = 1456
 REFERENCE_IMG_HEIGHT = 816
@@ -65,7 +61,7 @@ print("Puntos de píxel (resolución real):")
 for p in pixel_points:
     print(f"  {p}")
 
-# CALCULAR HOMOGRAFÍA
+# Calcular homografía
 H, status = cv2.findHomography(pixel_points, field_points)
 print(f"\nMatriz de homografía:\n{H}")
 
@@ -74,7 +70,7 @@ def pixel_to_field(px, py):
     transformed = cv2.perspectiveTransform(point, H)
     return transformed[0][0][0], transformed[0][0][1]
 
-# VALIDACIÓN
+# Validación de la homografía
 print("\n--- Validación de la homografía ---")
 for i, (px, py) in enumerate(pixel_points):
     fx, fy = pixel_to_field(px, py)
@@ -82,7 +78,7 @@ for i, (px, py) in enumerate(pixel_points):
     error = np.sqrt((fx - expected[0])**2 + (fy - expected[1])**2)
     print(f"  Punto {i}: proyectado=({fx:.2f}, {fy:.2f})  esperado=({expected[0]:.2f}, {expected[1]:.2f})  error={error:.3f}m")
 
-# CARGAR TRACKING DEL TRAMO
+# Cargar tracking del tramo
 result_path = os.path.join(RESULTS_DIR, f"{SEQUENCE}.txt")
 
 if not os.path.exists(result_path):
@@ -132,7 +128,7 @@ for excluded_id in EXCLUDED_TRACK_IDS:
 print(f"Track IDs excluidos manualmente: {EXCLUDED_TRACK_IDS}")
 print(f"Track IDs analizados: {len(tracks)}")
 
-# CALCULAR DISTANCIA Y VELOCIDAD
+# Calcilar distancia y velocidad
 SPEED_WINDOW = FPS
 
 results = []

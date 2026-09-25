@@ -44,9 +44,7 @@ def get_color(track_id):
         )
     return colors[track_id]
 
-# ─────────────────────────────────────────
-# CARGAR DETECCIONES (det.txt)
-# ─────────────────────────────────────────
+# Cargar detecciones
 detections = {}
 
 with open(det_path) as f:
@@ -64,9 +62,7 @@ with open(det_path) as f:
 # Inicializar BYTETracker
 tracker = BYTETracker()
 
-# ─────────────────────────────────────────
-# BUCLE PRINCIPAL
-# ─────────────────────────────────────────
+# Bucle principal
 images = sorted(os.listdir(img_folder))
 result_file = open(result_path, 'w')
 
@@ -101,7 +97,7 @@ for i, img_name in enumerate(images, start=1):
     tracks = tracker.update(dets_np, frame)
     # tracks: [[x1, y1, x2, y2, track_id], ...]
 
-    # ── Dibujar jugadores trackeados y guardar resultados ──
+    # Dibujar jugadores trackeados y guardar resultados
     for track in tracks:
         x1, y1, x2, y2, raw_id = int(track[0]), int(track[1]), int(track[2]), int(track[3]), int(track[4])
         seq_id = get_sequential_id(raw_id)
@@ -112,14 +108,14 @@ for i, img_name in enumerate(images, start=1):
         # Formato MOT: frame, id, x, y, w, h, conf, -1, -1, -1
         result_file.write(f"{i},{seq_id},{x1},{y1},{x2-x1},{y2-y1},1,-1,-1,-1\n")
 
-    # ── Dibujar balón ──
+    # Dibujar balón
     for (x, y, w, h) in ball_dets:
         x, y, w, h = int(x), int(y), int(w), int(h)
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
         cv2.putText(frame, "BALL", (x, y - 10),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
 
-    # ── Info en pantalla ──
+    # Info en pantalla
     cv2.putText(frame, f"Frame: {i}  Tracks: {len(tracks)}",
                 (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2)
     cv2.putText(frame, "Algoritmo: BYTETracker",

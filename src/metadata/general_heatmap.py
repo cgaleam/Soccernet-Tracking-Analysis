@@ -27,7 +27,7 @@ SEQUENCE = "SNMOT-118"  # secuencia a analizar
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# CARGAR RESULTADOS DE TRACKING
+# Cargar resultados del tracking
 result_path = os.path.join(RESULTS_DIR, f"{SEQUENCE}.txt")
 
 if not os.path.exists(result_path):
@@ -55,7 +55,7 @@ print(f"Total de posiciones: {len(x_centers)}")
 print(f"Rango X: {min(x_centers):.0f} - {max(x_centers):.0f}")
 print(f"Rango Y: {min(y_centers):.0f} - {max(y_centers):.0f}")
 
-# GENERAR MAPA DE CALOR
+# Generar mapa de calor
 fig, ax = plt.subplots(figsize=(12, 7))
 
 # Heatmap 2D con hexbin

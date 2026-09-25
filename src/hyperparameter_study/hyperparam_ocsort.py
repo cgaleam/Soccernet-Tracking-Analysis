@@ -13,7 +13,7 @@ import trackeval
 from boxmot import OCSORT
 
 # ─────────────────────────────────────────
-# CONFIGURACIÓN
+# CONFIGURACIÓNç
 # ─────────────────────────────────────────
 BASE_DIR        = os.path.dirname(os.path.abspath(__file__))
 DATASET_TRAIN   = os.path.join(BASE_DIR, '..', '..', '..', 'SoccerNet', 'tracking', 'train')
@@ -137,7 +137,7 @@ def evaluate(results_path, dataset_path, split, output_path, tracker_name):
     results = evaluator.evaluate(dataset_list, metrics_list)
     return results
 
-# MAIN 
+# Main
 if __name__ == "__main__":
 
     sequences = sorted([

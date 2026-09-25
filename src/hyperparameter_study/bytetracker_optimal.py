@@ -2,10 +2,6 @@
 bytetracker_optimal.py — Ejecuta y evalúa BYTETracker con la configuración óptima
 encontrada en el estudio de hiperparámetros.
 
-Configuración óptima:
-    match_thresh  = 0.9   (mayor impacto, HOTA 81.48 vs 80.20 base)
-    track_buffer  = 10    (ligera mejora respecto a 25 base)
-
 Uso:
     python src/hyperparameter_study/bytetracker_optimal.py
 
@@ -29,9 +25,7 @@ RESULTS_DIR     = os.path.join(BASE_DIR, '..', '..', 'results_hyperparam', 'byte
 EVALUATION_DIR  = os.path.join(BASE_DIR, '..', '..', 'evaluation_hyperparam', 'bytetracker', 'bytetracker_optimal')
 TRACKER_NAME    = 'bytetracker_optimal'
 
-# ─────────────────────────────────────────
-# PARÁMETROS ÓPTIMOS
-# ─────────────────────────────────────────
+
 OPTIMAL_PARAMS = {
     'track_thresh' : 0.45,  # no afecta al rendimiento
     'match_thresh' : 0.9,   
@@ -39,9 +33,7 @@ OPTIMAL_PARAMS = {
     'frame_rate'   : 30
 }
 
-# ─────────────────────────────────────────
-# PARÁMETROS DE DETECCIÓN DEL BALÓN
-# ─────────────────────────────────────────
+# Parámetros de detección del balón
 BALL_MAX_AREA  = 2000
 BALL_MIN_RATIO = 0.7
 BALL_MAX_RATIO = 1.3
@@ -111,9 +103,7 @@ def run_tracker(sequence_path):
 
     print(f"  [OK] {sequence} ({len(results)} tracks)")
 
-# ─────────────────────────────────────────
 # EVALUACIÓN
-# ─────────────────────────────────────────
 def evaluate():
     os.makedirs(EVALUATION_DIR, exist_ok=True)
 
@@ -145,9 +135,7 @@ def evaluate():
 
     evaluator.evaluate(dataset_list, metrics_list)
 
-# ─────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────
+# Main
 if __name__ == "__main__":
 
     sequences = sorted([

@@ -22,18 +22,14 @@ EVALUATION_PATH = os.path.join(os.path.dirname(__file__), '..', '..', 'evaluatio
 
 os.makedirs(EVALUATION_PATH, exist_ok=True)
 
-# ─────────────────────────────────────────
-# CONFIGURACIÓN DEL EVALUADOR
-# ─────────────────────────────────────────
+# Configuración del evaluador
 eval_config = trackeval.Evaluator.get_default_eval_config()
 eval_config['DISPLAY_LESS_PROGRESS'] = False
 eval_config['OUTPUT_FOLDER']         = EVALUATION_PATH
 eval_config['PRINT_RESULTS']         = True
 eval_config['PRINT_ONLY_COMBINED']   = False
 
-# ─────────────────────────────────────────
-# CONFIGURACIÓN DEL DATASET
-# ─────────────────────────────────────────
+# Configuración del dataset
 dataset_config = trackeval.datasets.MotChallenge2DBox.get_default_dataset_config()
 dataset_config['GT_FOLDER']          = DATASET_PATH
 dataset_config['TRACKERS_FOLDER']    = RESULTS_PATH
@@ -45,17 +41,13 @@ dataset_config['TRACKER_SUB_FOLDER'] = ''
 dataset_config['SKIP_SPLIT_FOL']     = True
 dataset_config['DO_PREPROC']         = False
 
-# ─────────────────────────────────────────
-# MÉTRICAS
-# ─────────────────────────────────────────
+# Métricas a calcular
 metrics_config = {
     'METRICS': ['HOTA', 'MOTA', 'IDF1'],
     'THRESHOLD': 0.5
 }
 
-# ─────────────────────────────────────────
-# EJECUTAR EVALUACIÓN
-# ─────────────────────────────────────────
+# Ejecutar evaluación
 print("="*60)
 print("Iniciando evaluación TEST con TrackEval")
 print(f"Dataset: {DATASET_PATH}")

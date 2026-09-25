@@ -18,16 +18,11 @@ from boxmot import BYTETracker, OCSORT
 DATASET_PATH = "../SoccerNet/tracking/test"
 RESULTS_PATH = os.path.join(os.path.dirname(__file__), '..', '..',  'results_test')
 
-# ─────────────────────────────────────────
-# PARÁMETROS DE DETECCIÓN DEL BALÓN
-# ─────────────────────────────────────────
+# Parámetros de detección del balón
 BALL_MAX_AREA  = 2000
 BALL_MIN_RATIO = 0.7
 BALL_MAX_RATIO = 1.3
 
-# ─────────────────────────────────────────
-# UTILIDADES
-# ─────────────────────────────────────────
 colors = {}
 
 def get_color(track_id):
@@ -104,9 +99,7 @@ def run_tracker(tracker_factory, tracker_name, sequence_path, results_dir, show=
 
     print(f"  [OK] {sequence} → {result_path} ({len(results)} tracks)")
 
-# ─────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────
+# Main
 if __name__ == "__main__":
 
     sequences = sorted([

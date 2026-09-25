@@ -37,9 +37,7 @@ SEARCH_SPACE = {
     'track_buffer' : [10, 20, 25, 40],
 }
 
-# ─────────────────────────────────────────
-# PARÁMETROS DE DETECCIÓN DEL BALÓN
-# ─────────────────────────────────────────
+# Parámetros de detección del balón
 BALL_MAX_AREA  = 2000
 BALL_MIN_RATIO = 0.7
 BALL_MAX_RATIO = 1.3
@@ -106,6 +104,7 @@ def run_tracker(params, sequence_path, results_dir):
     with open(result_path, 'w') as f:
         f.write('\n'.join(results))
 
+# Evaluación
 def evaluate(tracker_name):
     eval_dir = os.path.join(EVALUATION_BASE, tracker_name)
     os.makedirs(eval_dir, exist_ok=True)
@@ -137,7 +136,7 @@ def evaluate(tracker_name):
     ]
     evaluator.evaluate(dataset_list, metrics_list)
 
-# MAIN
+# Main
 if __name__ == "__main__":
 
     sequences = sorted([

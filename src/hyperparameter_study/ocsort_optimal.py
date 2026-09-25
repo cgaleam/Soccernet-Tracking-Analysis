@@ -2,11 +2,6 @@
 ocsort_optimal.py — Ejecuta y evalúa OCSORT con la configuración óptima
 encontrada en el estudio de hiperparámetros.
 
-Configuración óptima:
-    iou_threshold = 0.1  (mayor impacto, HOTA 80.17 vs 75.51 base)
-    max_age       = 10   (mejor que 30 base)
-    min_hits      = 1    (mejor HOTA aunque más IDSW)
-
 Uso:
     python src/hyperparameter_study/ocsort_optimal.py
 
@@ -30,9 +25,6 @@ RESULTS_DIR    = os.path.join(BASE_DIR, '..', '..', 'results_hyperparam', 'ocsor
 EVALUATION_DIR = os.path.join(BASE_DIR, '..', '..', 'evaluation_hyperparam', 'ocsort', 'ocsort_optimal')
 TRACKER_NAME    = 'ocsort_optimal'
 
-# ─────────────────────────────────────────
-# PARÁMETROS ÓPTIMOS
-# ─────────────────────────────────────────
 OPTIMAL_PARAMS = {
     'det_thresh'    : 0.3,   # no afecta al rendimiento
     'max_age'       : 10,    # óptimo encontrado
@@ -43,9 +35,7 @@ OPTIMAL_PARAMS = {
     'inertia'       : 0.2
 }
 
-# ─────────────────────────────────────────
-# PARÁMETROS DE DETECCIÓN DEL BALÓN
-# ─────────────────────────────────────────
+# Parámetros de detección del balón
 BALL_MAX_AREA  = 2000
 BALL_MIN_RATIO = 0.7
 BALL_MAX_RATIO = 1.3
@@ -115,9 +105,7 @@ def run_tracker(sequence_path):
 
     print(f"  [OK] {sequence} ({len(results)} tracks)")
 
-# ─────────────────────────────────────────
-# EVALUACIÓN CON TRACKEVAL
-# ─────────────────────────────────────────
+# Evaluación
 def evaluate():
     os.makedirs(EVALUATION_DIR, exist_ok=True)
 
@@ -149,9 +137,7 @@ def evaluate():
 
     evaluator.evaluate(dataset_list, metrics_list)
 
-# ─────────────────────────────────────────
-# MAIN
-# ─────────────────────────────────────────
+# Main
 if __name__ == "__main__":
 
     sequences = sorted([

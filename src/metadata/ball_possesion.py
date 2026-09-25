@@ -2,11 +2,7 @@
 ball_possession.py — Calcula la posesión del balón por equipo a partir
 de la proximidad espacial entre el balón detectado y los jugadores.
 
-METODOLOGÍA: para cada frame con balón detectado, se calcula qué jugador
-(track_id) está más cerca del balón y se asigna la posesión de ese frame
-al equipo de dicho jugador.
-
-Esto NO es posesión real en sentido futbolístico, sino una aproximación por
+Esto no es posesión real en sentido futbolístico, sino una aproximación por
 proximidad espacial entre el centro del balón y el centro del jugador
 más cercano.
 
@@ -57,14 +53,14 @@ with open(teams_csv, newline='') as f:
 
 print(f"Equipos cargados para {len(track_teams)} jugadores")
 
-# CARGAR JUGADORES DEL TRACKING Y BALÓN DEL det.txt ORIGINAL
+# Cargar jugadores y balón por frame
 DATASET_TEST = os.path.join(BASE_DIR, '..', '..', '..', 'SoccerNet', 'tracking', 'test')
 det_path = os.path.join(DATASET_TEST, SEQUENCE, "det", "det.txt")
 
 if not os.path.exists(det_path):
     raise FileNotFoundError(f"No se encontró {det_path}")
 
-# Jugadores: desde el archivo de resultados de tracking (tiene track_id estable)
+# Jugadores: desde el archivo de resultados de tracking
 result_path = os.path.join(RESULTS_DIR, f"{SEQUENCE}.txt")
 if not os.path.exists(result_path):
     raise FileNotFoundError(f"No se encontró {result_path}")
@@ -82,7 +78,7 @@ with open(result_path) as f:
         cy = y + h / 2
         players_by_frame[frame_id].append((track_id, cx, cy))
 
-# Balón: desde el det.txt original (detecciones crudas, sin IDs de tracking)
+# Balón: desde el det.txt original
 ball_by_frame = {}
 with open(det_path) as f:
     for line in f:
@@ -103,7 +99,7 @@ with open(det_path) as f:
 print(f"Frames con balón detectado: {len(ball_by_frame)}")
 print(f"Frames con jugadores: {len(players_by_frame)}")
 
-# CALCULAR JUGADOR MÁS CERCANO AL BALÓN, POR FRAME
+# Calcular jugador mas cercano al balón por frame y asignar posesión
 possession_by_frame = {}  # frame -> team (0, 1)
 
 for frame_id, (bx, by) in ball_by_frame.items():
@@ -129,7 +125,7 @@ for frame_id, (bx, by) in ball_by_frame.items():
 
 print(f"Frames con posesión asignada: {len(possession_by_frame)}")
 
-# CALCULAR PORCENTAJES DE POSESIÓN
+# Calcular porcentaje de posesión por equipo
 counts = defaultdict(int)
 for team in possession_by_frame.values():
     counts[team] += 1

@@ -2,10 +2,6 @@
 team_visualization.py — Visualiza la clasificación de equipos sobre un frame
 del vídeo, dibujando cada jugador con el color de su equipo asignado.
 
-Equipo 0 → azul
-Equipo 1 → rojo
-Sin asignación (no se clasificó) → gris
-
 Uso:
     python src/metadata/team_visualization.py
 """
@@ -27,14 +23,14 @@ SEQUENCE   = "SNMOT-118"  # secuencia a visualizar
 FRAME_TO_SHOW = 100  # frame del vídeo a visualizar
 
 TEAM_COLORS = {
-    0: (255, 0, 0),    # azul (BGR)
-    1: (0, 0, 255),    # rojo (BGR)
+    0: (255, 0, 0),    # azul
+    1: (0, 0, 255),    # rojo
 }
 UNKNOWN_COLOR = (128, 128, 128)  # gris
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# CARGAR ASIGNACIÓN FINAL DE EQUIPOS
+# Cargar asignación de equipos desde el CSV generado por team_classification.py
 teams_csv = os.path.join(TEAMS_DIR, f"{SEQUENCE}_teams_final.csv")
 
 if not os.path.exists(teams_csv):
@@ -48,7 +44,7 @@ with open(teams_csv, newline='') as f:
 
 print(f"Equipos cargados para {len(track_teams)} jugadores")
 
-# CARGAR TRACKING DEL FRAME ELEGIDO
+# Cargar tracking elegido
 result_path = os.path.join(RESULTS_DIR, f"{SEQUENCE}.txt")
 
 frame_tracks = []
@@ -66,14 +62,14 @@ with open(result_path) as f:
 
 print(f"Tracks en frame {FRAME_TO_SHOW}: {len(frame_tracks)}")
 
-# CARGAR IMAGEN DEL FRAME
+# Cargar imagen del frame
 img_folder = os.path.join(DATASET_TEST, SEQUENCE, "img1")
 images = sorted(os.listdir(img_folder))
 img_name = images[FRAME_TO_SHOW - 1]  # frame 1-indexed
 
 frame = cv2.imread(os.path.join(img_folder, img_name))
 
-# DIBUJAR CADA JUGADOR CON EL COLOR DE SU EQUIPO
+# Dibujar bounding boxes de jugadores con color según equipo
 for (track_id, x, y, w, h) in frame_tracks:
     x, y, w, h = int(x), int(y), int(w), int(h)
 
