@@ -4,7 +4,7 @@
 \section{Motivación}
 \label{sec:intro-motivacion}
 
-El análisis de datos es una disciplina de la informática que me apasiona, asi como 
+El análisis de datos es una disciplina de la informática que me apasiona, así como
 el deporte. El análisis de datos aplicado al deporte ha experimentado un crecimiento notable
 en la última década. Clubes, televisión, casas de apuestas y compañías de análisis
 deportivo invierten cada vez más recursos en extraer información objetiva del
@@ -134,7 +134,7 @@ específicos:
   \item \textbf{OE-11:} Desarrollar una aplicación web que sirva como
         demostrador visual e interactivo de los resultados del proyecto obtenidos,
         permitiendo explorar los
-        resultados de tracking y el análisis de datos generado. Tambien se
+        resultados de tracking y el análisis de datos generado. También se
         destinada a personas que no sean expertas en el área para facilitar
         su comprensión y visualización.
 \end{itemize}
@@ -144,19 +144,18 @@ específicos:
 
 Como se ha introducido en la sección~\ref{sec:intro-problema}, este proyecto
 parte de las detecciones del dataset y se centra en la etapa de
-asociación (tracking), no en el diseño de un detector de objetos propio. De
-todas formas, conviene precisar otros límites del proyecto desde el
-principio:
+asociación (tracking), no en el diseño de un detector de objetos propio. Estos son
+ los límites principales del proyecto:
 
 \begin{itemize}
   \item Los algoritmos comparados corresponden a la familia de métodos
-        \emph{tracking-by-detection} clásicos, sin componente de
-        reidentificación visual profunda (\emph{re-ID}); la incorporación de
+        \emph{tracking-by-detection} clásicos, los usados no tienen componente de
+        reidentificación visual profunda (\emph{re-ID}) pero la incorporación de
         algoritmos con re-ID se plantea como posible ampliación
-        (véase capítulo~\ref{cap:conclusiones}).
+        (capítulo~\ref{cap:conclusiones}).
   \item La proyección de posiciones de píxel a coordenadas reales del campo
         se realiza mediante dos enfoques de distinta fiabilidad: una
-        aproximación por rango observado (sin calibración de cámara), usada
+        aproximación por rango observado, usada
         de forma general, y una homografía real calculada manualmente sobre
         tramos concretos con cámara estable, usada como prueba de concepto
         para el cálculo de distancia y velocidad. Ambos enfoques, y sus
@@ -175,11 +174,11 @@ La memoria de este proyecto se organiza en los siguientes capítulos:
 \begin{itemize}
   \item \textbf{Capítulo~\ref{cap:fundamentos} -- Fundamentos teóricos y
         estado del arte.}
-        Presenta los conceptos teóricos necesarios para entender el
-        proyecto: el problema del seguimiento multiobjeto, los algoritmos
+        Describe los conceptos teóricos necesarios para entender el
+        proyecto y el estado del arte. Explica el problema del seguimiento multiobjeto, los algoritmos
         de tracking comparados, las métricas de evaluación empleadas, la
         clasificación de jugadores por color y los fundamentos de la
-        homografía entre otros; y cierra situando este TFG frente a los
+        homografía entre otros. y por último, cierra situando este TFG frente a los
         resultados del reto oficial de SoccerNet.
   \item \textbf{Capítulo~\ref{cap:gestion} -- Gestión del proyecto.}
         Describe la metodología de trabajo seguida, la planificación
@@ -196,7 +195,7 @@ La memoria de este proyecto se organiza en los siguientes capítulos:
   \item \textbf{Capítulo~\ref{cap:implementacion} -- Implementación.}
         Detalla cómo se han implementado el tracking, la evaluación, el
         estudio de hiperparámetros, el pipeline de metadatos y la
-        aplicación web, incluyendo los problemas técnicos encontrados y los
+        aplicación web, tambien los problemas técnicos encontrados y los
         enfoques que se probaron y no funcionaron.
   \item \textbf{Capítulo~\ref{cap:pruebas} -- Resultados.}
         Recoge la comparativa final entre ByteTrack y OC-SORT, los
@@ -215,4 +214,4 @@ La memoria de este proyecto se organiza en los siguientes capítulos:
 \end{itemize}
 
 Tras la bibliografía se incluye un glosario
-con los términos técnicos y las siglas usadas a lo largo de la memoria.
+con los términos y las siglas usadas a lo largo de la memoria.

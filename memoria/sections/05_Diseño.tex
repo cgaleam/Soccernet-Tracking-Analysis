@@ -18,33 +18,20 @@ sistema y cómo se comunican entre sí.
 
 \begin{figure}[htp]
 \centering
-\begin{tikzpicture}[
-  every node/.style={align=center, font=\footnotesize},
-  box/.style={draw, rounded corners, fill=blue!8, minimum width=3.4cm, minimum height=1.1cm},
-  arrow/.style={-{Latex[length=2.5mm]}, thick}
-]
-\node[box, fill=gray!12] (dataset) {SoccerNet-Tracking\\(dataset externo)};
-\node[box, right=1.6cm of dataset] (pipeline) {Pipeline offline\\(Python)};
-\node[box, below=1.3cm of pipeline, minimum width=5.2cm, fill=yellow!12] (storage) {Artefactos persistidos en disco\\\footnotesize\texttt{.txt / .csv / .png / .mp4 / .json}};
-\node[box, right=1.6cm of pipeline, fill=orange!10] (web) {Aplicación web\\(React + Vite + TS)};
-\draw[arrow] (dataset) -- (pipeline) node[midway, above, font=\tiny] {\texttt{det.txt}, \texttt{gt.txt}};
-\draw[arrow] (pipeline) -- (storage);
-\draw[arrow] (storage) -- (web) node[midway, above, font=\tiny, sloped] {paquete exportado};
-\draw[arrow] (storage.north) to[out=100, in=260] node[midway, left, font=\tiny] {reanuda desde cualquier fase} (pipeline.south);
-\end{tikzpicture}
+\includegraphics[width=0.85\textwidth]{figures/arquitectura_general.drawio.png}
 \caption{Arquitectura general del sistema, a nivel de componentes: el
 pipeline offline persiste todo su trabajo en disco en vez de mantener
 estado en memoria, y la aplicación web consume ese mismo almacenamiento ya
-calculado, sin recalcular nada ni compartir proceso con el pipeline.}
+calculado, sin recalcular.}
 \label{fig:diseno-arquitectura}
 \end{figure}
 
 Esta arquitectura por artefactos persistidos tiene tres ventajas de diseño
 aprovechadas en este proyecto. Primero, permite
 \textbf{reanudar} el trabajo desde cualquier fase sin repetir las
-anteriores: el estudio de hiperparámetros (sección~\ref{sec:diseno-hiperparametros})
+anteriores: el estudio de hiperparámetros
 se apoya en resultados de tracking ya calculados, y el pipeline de
-metadatos (sección~\ref{sec:diseno-metadatos}) se apoya en la configuración
+metadatos se apoya en la configuración
 óptima ya validada, sin necesidad de volver a ejecutar el tracking desde
 cero cada vez. Segundo, favorece la \textbf{reproducibilidad}
 (RNF-001): cualquier resultado puede auditarse inspeccionando el artefacto
@@ -57,8 +44,7 @@ es la base que permite a la aplicación web
 
 El pipeline de tracking transforma las detecciones precomputadas de una
 secuencia en trayectorias con identidad consistente,
-aplicando el algoritmo de tracking correspondiente
-(sección~\ref{sec:fundamentos-algoritmos}). Se compone de tres bloques de
+aplicando el algoritmo de tracking correspondiente. Se compone de tres bloques de
 diseño: el filtrado del balón, la ejecución del algoritmo de tracking sobre
 una única secuencia, y la orquestación de esa ejecución sobre la totalidad
 de un split.
@@ -245,8 +231,7 @@ por núcleos (\emph{Kernel Density Estimation}, KDE) que suaviza la nube de
 puntos discretos en un mapa continuo. Se diseñan dos variantes, que
 comparten el mismo procedimiento de proyección y KDE pero difieren en el
 conjunto de posiciones de entrada: el mapa \textbf{general}, con todas las
-posiciones de la secuencia, y el mapa \textbf{por equipo}
-(sección~\ref{subsec:diseno-equipos}), que separa las posiciones según la
+posiciones de la secuencia, y el mapa \textbf{por equipo}, que separa las posiciones según la
 clasificación de equipos y usa la misma escala para ambos equipos, de modo
 que sean directamente comparables entre sí.
 

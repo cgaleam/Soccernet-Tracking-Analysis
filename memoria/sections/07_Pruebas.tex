@@ -101,8 +101,7 @@ invierte a favor de ByteTrack.}
 \label{fig:pruebas-hota-vs-hota0}
 \end{figure}
 
-Esta discrepancia no es un error de cálculo ni una casualidad estadística:
-tiene una explicación mecánica concreta, visible en las columnas de
+Esta discrepancia es visible en las columnas de
 precisión de localización (\texttt{LocA}) del fichero
 \texttt{pedestrian\_summary.txt} de \texttt{TrackEval}. OC-SORT alcanza una
 \texttt{LocA} y una \texttt{DetPr} prácticamente perfectas (superiores al
@@ -111,31 +110,30 @@ directamente las cajas del \texttt{det.txt} original sin modificarlas},
 coherente con su diseño centrado en la observación. ByteTrack, en cambio, obtiene
 una \texttt{LocA} sensiblemente más baja (89,8\,\% en train, 89,7\,\% en
 test), lo que indica que sus cajas de salida se desvían algo más de las
-detecciones originales (previsiblemente por la interpolación de posición
+detecciones originales (posiblemente por la interpolación de posición
 que realiza el filtro de Kalman durante su segunda ronda de asociación con
 detecciones de baja confianza (sección~\ref{subsec:fundamentos-bytetrack})).
 
 Esa imprecisión de localización de ByteTrack apenas penaliza a HOTA(0),
-calculada en un único umbral de IoU relativamente permisivo (0,5), pero se
+calculada en un único umbral de IoU (0,5), pero se
 paga cara en la HOTA integrada, que promedia también sobre umbrales mucho
-más exigentes (hasta 0,95): a esos umbrales estrictos, una caja
+más exigentes (hasta 0,95). A esos umbrales estrictos, una caja
 ligeramente desplazada dejará de solapar lo suficiente con el
 \emph{ground truth} para contar como acierto, mientras que las cajas casi
 perfectas de OC-SORT siguen acertando. En definitiva, \textbf{ByteTrack
 detecta más objetos y con más consistencia de identidad relativa
-(mayor \texttt{DetRe}), pero los localiza con menos precisión; OC-SORT
+(mayor \texttt{DetRe}), pero los localiza con menos precisión. OC-SORT
 detecta algo menos pero con una fidelidad casi perfecta a la detección
-original}, y es esta diferencia de precisión geométrica, no de robustez de
-asociación, la que explica por qué la métrica más exigente (HOTA integrada)
+original}, y es esta diferencia de precisión geométrica, 
+la que explica el por qué la métrica más exigente (HOTA integrada)
 favorece a OC-SORT mientras que la métrica de umbral único (HOTA(0))
 favorece a ByteTrack.
 
-La conclusión que se extrae de este contraste, y que corrige la lectura
+La conclusión que se extrae de esto y que corrige la lectura
 inicial de las anotaciones de desarrollo de este proyecto, es que
 \textbf{OC-SORT es el algoritmo con mejor rendimiento global en este
 dataset}, tanto en entrenamiento como en test, cuando se evalúa con la
-métrica íntegra y más robusta del campo. Dicho esto, ByteTrack no queda
-descartado sin matices: su menor precisión de localización es
+métrica íntegra y más robusta del campo. Dicho esto, ByteTrack con su menor precisión de localización es
 perfectamente compatible con aplicaciones menos exigentes en exactitud
 geométrica de la caja, y su comportamiento bajo ajuste de hiperparámetros
 resulta, de hecho, más estable que el de OC-SORT.
@@ -143,10 +141,12 @@ resulta, de hecho, más estable que el de OC-SORT.
 \section{Resultados del estudio de hiperparámetros}
 \label{sec:pruebas-hiperparametros}
 
-El estudio de hiperparámetros se reporta en términos de HOTA(0) y no de HOTA integrada
-. La
-Figura~\ref{fig:pruebas-hiperparametros} muestra el efecto de los dos
-hiperparámetros con mayor impacto observado, uno por algoritmo.
+El estudio de hiperparámetros se reporta en términos de HOTA(0) y no de
+HOTA integrada. La Figura~\ref{fig:pruebas-hiperparametros} muestra el
+efecto de los dos hiperparámetros con mayor impacto observado, uno por
+algoritmo, y la Tabla~\ref{tab:pruebas-hiperparametros-sensibilidad}
+recoge el análisis de sensibilidad completo sobre las configuraciones
+base descritas en la sección~\ref{sec:implementacion-hiperparametros}.
 
 \begin{figure}[htp]
 \centering
@@ -166,8 +166,45 @@ mayor impacto individual encontrados en el estudio
 \label{fig:pruebas-hiperparametros}
 \end{figure}
 
-El resultado más relevante de este estudio, ya adelantado en la
-sección~\ref{sec:implementacion-hiperparametros}, es que \textbf{el ajuste
+\FloatBarrier
+
+\begin{table}[htp]
+\centering
+\caption{Análisis de sensibilidad: efecto de cada hiperparámetro sobre HOTA(0) (\%) en el conjunto de test.}
+\label{tab:pruebas-hiperparametros-sensibilidad}
+\renewcommand{\arraystretch}{1.2}
+\small
+\begin{tabular}{|p{3.1cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|}
+\hline
+\rowcolor{gray!25}
+\textbf{Hiperparámetro} & \multicolumn{5}{c|}{\textbf{Valor del hiperparámetro}} \\
+\hline
+\texttt{match\_thresh} (BT) & 0.6 & 0.7 & 0.8 (base) & 0.9 & -- \\
+\hline
+HOTA(0) & 74.62 & 78.03 & 80.20 & \textbf{81.48} & -- \\
+\hline
+\texttt{track\_buffer} (BT) & 10 & 20 & 25 (base) & 40 & -- \\
+\hline
+HOTA(0) & \textbf{80.36} & 80.26 & 80.20 & 80.12 & -- \\
+\hline
+\texttt{iou\_threshold} (OC) & 0.1 & 0.2 & 0.3 (base) & 0.4 & 0.5 \\
+\hline
+HOTA(0) & \textbf{80.17} & 78.71 & 75.51 & 70.90 & 64.49 \\
+\hline
+\texttt{max\_age} (OC) & 10 & 20 & 30 (base) & 50 & -- \\
+\hline
+HOTA(0) & \textbf{76.13} & 75.75 & 75.51 & 75.13 & -- \\
+\hline
+\texttt{min\_hits} (OC) & 1 & 2 & 3 (base) & 5 & -- \\
+\hline
+HOTA(0) & \textbf{76.26} & 75.90 & 75.51 & 74.78 & -- \\
+\hline
+\end{tabular}
+\end{table}
+
+\FloatBarrier
+
+El resultado más relevante de este estudio es que \textbf{el ajuste
 de hiperparámetros beneficia mucho más a OC-SORT que a ByteTrack}: OC-SORT
 mejora su HOTA(0) en test de 75,51 a 80,92 (+5,41 puntos) con la
 configuración óptima combinada, mientras que ByteTrack mejora de 80,20 a
@@ -180,6 +217,17 @@ HOTA integrada usando las configuraciones óptimas de ambos algoritmos en
 lugar de sus valores por defecto, es razonable esperar que la ventaja de
 OC-SORT sobre ByteTrack se mantenga o incluso se ampliase, dado que es
 OC-SORT quien más partido saca del ajuste.
+
+Es interesante notar que la configuración combinada de ByteTrack
+(81{,}43) resulta ligeramente \emph{inferior} al mejor valor individual de
+\texttt{match\_thresh} por sí solo (81{,}48 con
+\texttt{match\_thresh=0.9} y \texttt{track\_buffer} sin modificar): los
+efectos de ambos hiperparámetros no son estrictamente aditivos, y combinar
+el mejor valor de cada uno por separado no garantiza el mejor resultado
+conjunto. En OC-SORT, en cambio, la combinación de los tres
+hiperparámetros (80{,}92) mejora claramente sobre cualquiera de ellos por
+separado (mejor individual: 80{,}17 con \texttt{iou\_threshold=0.1}), lo
+que indica que en este caso sí se refuerzan entre sí.
 
 Por ser la configuración de mayor HOTA(0) absoluto entre las dos
 configuraciones óptimas (81,43 frente a 80,92), \textbf{ByteTrack con
@@ -381,11 +429,11 @@ los resultados presentados:
   \item \textbf{Homografía real limitada a dos tramos cortos}: los
         resultados de distancia y velocidad se basan en 12-15 segundos de
         vídeo de dos secuencias concretas, no en partidos completos.
-  \item \textbf{Posesión como heurística, no como estadística oficial}: los
+  \item \textbf{Posesión como heurística}: los
         porcentajes de la Tabla~\ref{tab:pruebas-posesion} miden proximidad
         espacial al balón, no posesión táctica real, y se calculan sobre
         secuencias muy cortas.
   \item \textbf{Detección del balón por criterio geométrico}: cualquier
-        resultado que dependa de la localización del balón hereda las limitaciones del filtro geométrico frente a
-        un detector entrenado.
+        resultado que dependa de la localización del balón tendría
+        las limitaciones del filtro geométrico.
 \end{itemize}

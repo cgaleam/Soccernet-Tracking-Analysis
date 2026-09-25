@@ -27,21 +27,7 @@ capítulo~\ref{cap:diseno}.
 
 \begin{figure}[htp]
 \centering
-\begin{tikzpicture}[
-  every node/.style={align=center, font=\small},
-  box/.style={draw, rounded corners, minimum height=1.1cm},
-  arrow/.style={-{Latex[length=2.5mm]}, thick}
-]
-\node[box, fill=gray!10, minimum width=3.4cm] (soccernet) {SoccerNet-Tracking};
-\node[box, fill=blue!10, minimum width=4.6cm, right=1.6cm of soccernet] (pipeline) {Pipeline(Python)};
-\node[box, fill=orange!12, minimum width=4.2cm, right=1.6cm of pipeline] (web) {Aplicación web};
-\draw[arrow] (soccernet) -- (pipeline) node[midway, above, font=\footnotesize] {\texttt{det.txt}, \texttt{gt.txt}};
-\draw[arrow] (pipeline) -- (web) node[midway, above, font=\footnotesize] {resultados exportados};
-\node[below=0.5cm of pipeline, font=\footnotesize, align=center, text width=8cm]
-  {El pipeline consume el dataset y produce resultados persistidos en disco
-   (CSV, PNG, MP4); la aplicación web los consume ya calculados,
-   sin ejecutar ninguna fase del pipeline.};
-\end{tikzpicture}
+\includegraphics[width=0.7\textwidth]{figures/contexto_funcional.drawio.png}
 \caption{Contexto funcional del sistema: el dataset público como entrada, el
 pipeline offline como bloque de cómputo, y la aplicación web como capa de
 visualización sobre los resultados.}
@@ -52,8 +38,7 @@ visualización sobre los resultados.}
 \label{sec:analisis-decision}
 
 Antes de comprometerse con el seguimiento multiobjeto como tarea de este
-proyecto, se exploraron brevemente otras tareas del ecosistema SoccerNet
-(sección~\ref{sec:fundamentos-dataset}), como parte de la primera fase del
+proyecto, se exploraron brevemente otras tareas del ecosistema SoccerNet, como parte de la primera fase del
 proyecto descrita en la sección~\ref{sec:gestion-fases}. Concretamente, se
 valoraron tres alternativas:
 
@@ -78,12 +63,10 @@ valoraron tres alternativas:
 
 La decisión final se apoyó en varios factores concretos, verificados
 mediante pruebas exploratorias reales antes de comprometerse con la tarea:
-el dataset SoccerNet-Tracking incluye detecciones ya calculadas
-(\texttt{det.txt}, sección~\ref{subsec:fundamentos-soccernet-tracking}), lo
+el dataset SoccerNet-Tracking incluye detecciones ya calculadas, lo
 que elimina la barrera de tener que entrenar o adaptar un detector de
 objetos propio; en apenas unas horas de exploración inicial fue posible
-pasar de cero a visualizaciones funcionales sobre el \emph{ground truth}
-(scripts descritos en la sección~\ref{sec:implementacion-tracking}); el
+pasar de cero a visualizaciones funcionales sobre el \emph{ground truth}; el
 tutor confirmó que era válido plantear el trabajo como una comparativa
 rigurosa de varios algoritmos de \emph{tracking-by-detection}
 (sección~\ref{sec:fundamentos-algoritmos}), en lugar de limitarse a
@@ -100,8 +83,7 @@ específicamente su versión \texttt{10.0.43}, ya que versiones posteriores
 de la librería (a partir de la v18) dejaron de mostrar las clases de cada
 algoritmo por separado, unificándolas bajo una única interfaz, lo cual no se
 quería en este proyecto, ya que dificultaba precisamente la comparación que el proyecto
-necesitaba. Para la evaluación se adoptó \texttt{TrackEval}
-(sección~\ref{sec:implementacion-evaluacion}), por ser la herramienta de
+necesitaba. Para la evaluación se adoptó \texttt{TrackEval}, por ser la herramienta de
 referencia oficial del propio benchmark de SoccerNet y que funciona muy bien con el formato MOT estándar que produce \texttt{boxmot}.
 
 \section{Actores y usuarios del sistema}
@@ -120,7 +102,7 @@ Se identifican dos actores primarios y un actor secundario, representados
 en la Figura~\ref{fig:analisis-actores} y descritos en la
 Tabla~\ref{tab:analisis-actores}: el \textbf{operador del pipeline}, que
 ejecuta las distintas fases del procesamiento offline, el \textbf{usuario
-analista}que consulta la aplicación web para explorar e interpretar los
+analista} que consulta la aplicación web para explorar e interpretar los
 resultados y SoccerNet, como sistema externo del
 que el pipeline obtiene los datos de entrada.
 

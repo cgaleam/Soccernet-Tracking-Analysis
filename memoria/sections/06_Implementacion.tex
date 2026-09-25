@@ -18,7 +18,7 @@ en el sistema. Se omiten las dependencias transitivas de bajo nivel, como
 \texttt{torch} o \texttt{pandas}, que \texttt{requirements.txt} incluye por
 ser un volcado completo del entorno pero que ningún
 script del proyecto importa directamente: llegan al entorno como
-dependencias de \texttt{boxmot} y de \texttt{ultralytics}--.
+dependencias de \texttt{boxmot} y de \texttt{ultralytics}.
 
 \clearpage
 
@@ -27,7 +27,7 @@ dependencias de \texttt{boxmot} y de \texttt{ultralytics}--.
 \caption{Librerías principales empleadas y su función en el sistema.}
 \label{tab:impl-librerias}
 \renewcommand{\arraystretch}{1.25}
-\begin{tabular}{|p{2.6cm}|p{1.8cm}|p{7.0cm}|}
+\begin{tabular}{|p{2.6cm}|p{2.5cm}|p{7.0cm}|}
 \hline
 \rowcolor{gray!25}
 \textbf{Librería} & \textbf{Versión} & \textbf{Función en el sistema} \\
@@ -38,8 +38,8 @@ dependencias de \texttt{boxmot} y de \texttt{ultralytics}--.
   Tabla~\ref{tab:impl-problemas}. \\
 \hline
 \texttt{trackeval} & \texttt{sn-trackeval} 0.4.0 & Evaluación con
-  métricas MOT estándar (
-  sección~\ref{sec:fundamentos-metricas}). Fork de TrackEval adaptado por
+  métricas MOT estándar
+  sección. Fork de TrackEval adaptado por
   SoccerNet al formato de su benchmark. \\
 \hline
 \texttt{opencv-python} & 4.13.0.92 & Lectura y anotación de frames,
@@ -227,7 +227,7 @@ El código de la aplicación web, al no ser Python, vive fuera de
 \label{subsec:impl-visualizacion}
 
 Antes de implementar ningún algoritmo de tracking, la primera fase del
-proyecto (sección~\ref{sec:gestion-fases}) se dedicó a comprender el
+proyecto se dedicó a comprender el
 formato del dataset mediante scripts exploratorios, todos
 ellos trabajando directamente sobre el \emph{ground truth}
 (\texttt{gt.txt}) y no sobre predicciones reales de ningún tracker:
@@ -278,13 +278,12 @@ de partida, y
 \texttt{OCSORT} también con su configuración por defecto en
 \texttt{sort\_alg.py}.
 
-El nombre de este último fichero, \texttt{sort\_alg.py}, es una muestra
-histórica, documentada en la sección~\ref{subsec:fundamentos-sort}: la
+El nombre \texttt{sort\_alg.py}, es una marca, documentada en la sección~\ref{subsec:fundamentos-sort}. La
 intención original era implementar el SORT clásico, pero \texttt{boxmot}
-en su versión fijada (P4) no expone una clase \texttt{SORT} independiente,
-solo \texttt{OCSORT}, su evolución directa. El fichero conserva su nombre
+en su versión fijada no expone una clase \texttt{SORT} independiente,
+solo su evolución directa \texttt{OCSORT}. El fichero conserva su nombre
 original como constancia de esa decisión, aunque su contenido implementa
-en realidad OC-SORT.
+realmente OC-SORT.
 
 Las detecciones que llegan de \texttt{det.txt} en formato
 $(x, y, w, h)$ se convierten al formato $(x_1, y_1, x_2, y_2, \text{conf},
@@ -316,7 +315,7 @@ constancia de esa reorganización.
 \section{Implementación de la evaluación}
 \label{sec:implementacion-evaluacion}
 
-La evaluación (diseñada en la sección~\ref{sec:diseno-evaluacion}) se
+La evaluación se
 implementa en dos scripts,
 \texttt{evaluate\_train.py} y \texttt{evaluate\_test.py}, que configuran
 \texttt{TrackEval} con los mismos parámetros salvo el split evaluado:
@@ -418,70 +417,27 @@ Tabla~\ref{tab:impl-hiperparametros-espacio}.
 \end{tabular}
 \end{table}
 
-Los resultados de este barrido se resumen en la Tabla~\ref{tab:impl-hiperparametros-resultados}
-para los hiperparámetros con efecto observable. Los hiperparámetros
-\texttt{track\_thresh} (ByteTrack) y \texttt{det\_thresh} (OC-SORT) no
-mostraron ningún efecto sobre la métrica en el rango probado, y se omiten
-de la tabla por brevedad.
+Los hiperparámetros \texttt{track\_thresh} (ByteTrack) y
+\texttt{det\_thresh} (OC-SORT) no mostraron ningún efecto sobre la
+métrica en el rango probado. El análisis de sensibilidad completo del
+resto de hiperparámetros, con el efecto observado de cada uno sobre
+HOTA(0), se presenta en la sección~\ref{sec:pruebas-hiperparametros} del
+capítulo~\ref{cap:pruebas}, junto con la interpretación de esos
+resultados: esta sección se limita a describir cómo se generó y validó la
+configuración óptima.
 
-\begin{table}[htp]
-\centering
-\caption{Efecto de cada hiperparámetro sobre HOTA(0) (\%) en el conjunto de test.}
-\label{tab:impl-hiperparametros-resultados}
-\renewcommand{\arraystretch}{1.2}
-\small
-\begin{tabular}{|p{3.1cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|}
-\hline
-\rowcolor{gray!25}
-\textbf{Hiperparámetro} & \multicolumn{5}{c|}{\textbf{Valor del hiperparámetro}} \\
-\hline
-\texttt{match\_thresh} (BT) & 0.6 & 0.7 & 0.8 (base) & 0.9 & -- \\
-\hline
-HOTA(0) & 74.62 & 78.03 & 80.20 & \textbf{81.48} & -- \\
-\hline
-\texttt{track\_buffer} (BT) & 10 & 20 & 25 (base) & 40 & -- \\
-\hline
-HOTA(0) & \textbf{80.36} & 80.26 & 80.20 & 80.12 & -- \\
-\hline
-\texttt{iou\_threshold} (OC) & 0.1 & 0.2 & 0.3 (base) & 0.4 & 0.5 \\
-\hline
-HOTA(0) & \textbf{80.17} & 78.71 & 75.51 & 70.90 & 64.49 \\
-\hline
-\texttt{max\_age} (OC) & 10 & 20 & 30 (base) & 50 & -- \\
-\hline
-HOTA(0) & \textbf{76.13} & 75.75 & 75.51 & 75.13 & -- \\
-\hline
-\texttt{min\_hits} (OC) & 1 & 2 & 3 (base) & 5 & -- \\
-\hline
-HOTA(0) & \textbf{76.26} & 75.90 & 75.51 & 74.78 & -- \\
-\hline
-\end{tabular}
-\end{table}
-
-A partir de estos resultados individuales, \texttt{bytetracker\_optimal.py}
-y \texttt{ocsort\_optimal.py} fijan y validan la configuración combinada
-que RF-008 exige confirmar de forma independiente:
+A partir de esos resultados individuales, \texttt{bytetracker\_optimal.py}
+y \texttt{ocsort\_optimal.py} fijan y validan de forma independiente la
+configuración combinada que RF-008 exige confirmar:
 \texttt{match\_thresh=0.9, track\_buffer=10} para ByteTrack (manteniendo
 \texttt{track\_thresh=0.45}, sin efecto), y
 \texttt{iou\_threshold=0.1, max\_age=10, min\_hits=1} para OC-SORT
-(manteniendo \texttt{det\_thresh=0.3}, sin efecto). Al ejecutar y evaluar
-estas configuraciones combinadas de forma independiente, se obtiene HOTA(0)
-= 81{,}43 para ByteTrack y HOTA(0) = 80{,}92 para OC-SORT.
-
-Es interesante notar que la configuración combinada de ByteTrack
-(81{,}43) resulta ligeramente \emph{inferior} al mejor valor individual de
-\texttt{match\_thresh} por sí solo (81{,}48 con
-\texttt{match\_thresh=0.9} y \texttt{track\_buffer} sin modificar): los
-efectos de ambos hiperparámetros no son estrictamente aditivos, y combinar
-el mejor valor de cada uno por separado no garantiza el mejor resultado
-conjunto. En
-OC-SORT, en cambio, la combinación de los tres hiperparámetros (80{,}92)
-mejora claramente sobre cualquiera de ellos por separado (mejor individual:
-80{,}17 con \texttt{iou\_threshold=0.1}), lo que indica que en este caso sí
-se refuerzan entre sí. Esta configuración óptima de ByteTrack, por ser la
-de mayor HOTA(0) absoluto entre ambos algoritmos, es la que se usa como
-base de todo el pipeline de metadatos de la
-sección~\ref{sec:implementacion-metadatos}.
+(manteniendo \texttt{det\_thresh=0.3}, sin efecto). Los resultados
+numéricos de esta validación independiente, y la comparación entre ambas
+configuraciones óptimas, se presentan igualmente en la
+sección~\ref{sec:pruebas-hiperparametros}; esta configuración de
+ByteTrack es, en cualquier caso, la que se usa como base de todo el
+pipeline de metadatos de la sección~\ref{sec:implementacion-metadatos}.
 
 Por último, \texttt{summarize\_hyperparam.py} consolida todos estos
 resultados en \texttt{evaluation\_hyperparam/summary\_table.csv} y genera
@@ -557,15 +513,10 @@ confirma que la matriz describe correctamente la transformación en la zona
 próxima a los puntos de calibración.
 A partir de esa matriz, la posición de cada jugador se proyecta a
 metros reales frame a frame, y de esa secuencia de posiciones proyectadas
-se calcula la distancia total recorrida (suma de las distancias euclídeas
-entre posiciones consecutivas) y la velocidad, tanto media como de pico
---esta última como el percentil 95 de las velocidades instantáneas
-calculadas sobre una ventana de 1 segundo.
+se calcula la distancia total recorrida y la velocidad, tanto media como de pico.
 
-Para los mapas de calor calibrados con esta homografía real
-(\texttt{heatmap\_homography\_demo\_116.py} y
-\texttt{heatmap\_homography\_demo\_118.py}), el diseño incorpora además el
-sombreado de honestidad visual descrito en la
+Para los mapas de calor calibrados con esta homografía, el diseño incorpora además el
+sombreado visual descrito en la
 sección~\ref{subsec:diseno-homografia}
 (Figura~\ref{fig:diseno-heatmap-homografia-ejemplo}): las zonas del campo
 alejadas de los 4 puntos de calibración se oscurecen para indicar
@@ -574,8 +525,8 @@ además, dos identificadores de tracking
 (\texttt{EXCLUDED\_TRACK\_IDS = [328, 274]}) se excluyen manualmente del
 mapa de calor calibrado: corresponden a jugadores cuya posición proyectada
 se aleja del campo de forma incompatible con un movimiento humano real,
-señal de que su trayectoria de tracking se desvía significativamente de la
-zona de cámara estable para la que se calculó esa homografía concreta.
+señal de que su trayectoria de tracking está fuera de la
+zona de cámara estable para la que se calculó la homografía.
 
 \subsection{Posesión de balón}
 \label{subsec:impl-posesion}

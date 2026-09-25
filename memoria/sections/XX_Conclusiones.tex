@@ -37,32 +37,30 @@ Este proyecto como resultado ha dado una comparativa entre dos algoritmos de tra
 El resultado más relevante de este proyecto no es una cifra aislada, sino la comparativa entre ByteTrack y OC-SORT depende
 de forma decisiva de qué variante de HOTA se use para medirla.
 Bajo HOTA(0)  ByteTrack
-aventaja a OC-SORT en el conjunto de test; bajo HOTA integrada ese resultado se
+toma ventaja a OC-SORT en el conjunto de test, sin em embargo, bajo HOTA integrada ese resultado se
 invierte con claridad en ambos conjuntos, porque OC-SORT reutiliza las
 detecciones del \emph{dataset} sin modificarlas mientras que ByteTrack las
 interpola en su segunda ronda de asociación, lo que penaliza a ByteTrack en
-los umbrales más estrictos que HOTA(0) no llega a evaluar. Que dos formas
-igual de legítimas de medir el mismo sistema lleven a conclusiones
+los umbrales más estrictos que HOTA(0) no llega a evaluar. Son dos formas
+igual de buenas para medir el mismo sistema. Que lleven a conclusiones
 opuestas sobre qué algoritmo es mejor no es un detalle menor de este
 proyecto, es uno de sus resultados.
 
 Sobre la configuración óptima resultante, el pipeline de metadatos
 ha demostrado ser aplicable sobre
-secuencias reales de SoccerNet, con resultados numéricos consistentes
-entre sí: por ejemplo, el porcentaje de posesión del equipo dominante en
+secuencias reales de SoccerNet, con resultados numéricos consistentes,
+por ejemplo, el porcentaje de posesión del equipo dominante en
 SNMOT-116 se mantiene prácticamente igual pese a partir de
 asociaciones de tracking distintas.
-Finalmente, la aplicación web ha demostrado que ese mismo pipeline puede
-exponerse como una interfaz interactiva y visual para el usuario.
 
 \section{Limitaciones}
 \label{sec:conclusiones-limitaciones}
 
-Las limitaciones de este proyecto se han ido documentando explícitamente en
-los capítulos correspondientes del proyecto, pero se resumen aquí de forma conjunta:
+Las limitaciones de este proyecto se han ido documentando a lo largo del desarrollo en
+los capítulos del proyecto, pero se resumen aquí:
 
 \begin{itemize}
-  \item El estudio de hiperparámetros completo se reporta en HOTA(0), no en
+  \item El estudio de hiperparámetros se realiza en HOTA(0), no en
         la métrica integrada usada en la comparativa principal
         (sección~\ref{sec:pruebas-limitaciones}).
   \item La comparativa de HOTA integrada usa los valores por defecto de

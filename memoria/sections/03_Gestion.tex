@@ -82,7 +82,7 @@ principales y el resultado obtenido en cada una.
 \caption{Resumen de las fases del proyecto.}
 \label{tab:gestion-fases}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{2.1cm}|p{5.2cm}|p{5.4cm}|}
+\begin{tabular}{|p{2.9cm}|p{5.2cm}|p{5.4cm}|}
 \hline
 \rowcolor{gray!25}
 \textbf{Fase del proyecto} & \textbf{Actividades principales} & \textbf{Resultado obtenido} \\
@@ -153,7 +153,7 @@ concreta que ha desempeñado dentro de este proyecto:
         principal con el cliente o, en este caso, con el tutor académico.
         En este proyecto, este rol ha cubierto la elaboración y revisión de
         la planificación (sección~\ref{sec:gestion-planificacion}), la
-        preparación y el seguimiento de las reuniones con el tutor, la
+        preparación y el seguimiento del proceso con el tutor, la
         gestión de riesgos (sección~\ref{sec:gestion-riesgos}) y, en la
         fase final, la organización y redacción de esta memoria.
   \item \textbf{Analista de software.} Es el responsable de traducir las
@@ -168,7 +168,7 @@ concreta que ha desempeñado dentro de este proyecto:
         especializado en el diseño, implementación y evaluación de
         algoritmos de visión por computador; en este proyecto equivale al
         rol que en un proyecto de ciencia de datos más general
-        correspondería a un científico de datos, adaptado especificamente
+        correspondería a un científico de datos, adaptado específicamente
         al dominio del seguimiento multiobjeto. Ha sido, el
         rol con mayor dedicación del proyecto: implementación y comparación
         de los algoritmos de tracking, diseño e interpretación del estudio
@@ -224,7 +224,7 @@ Además de estos cuatro roles internos, el tutor del proyecto, Manuel
 Carranza García, del departamento de Lenguajes y Sistemas Informáticos de
 la Escuela Técnica Superior de Ingeniería Informática de la Universidad de
 Sevilla \cite{webETSII}, ha ejercido de supervisor a lo largo de todo el
-desarrollo mediante reuniones periódicas de seguimiento. Su papel ha sido de gran importancia, ya que muchas de las
+desarrollo mediante feedback constante de seguimiento. Su papel ha sido de gran importancia, ya que muchas de las
 decisiones clave del proyecto responden directamente a su orientación,
 entre ellas, la propuesta de las tres
 líneas de ampliación que estructuran buena parte de la segunda mitad del
@@ -253,12 +253,12 @@ representa esta descomposición de forma gráfica.
 
 Cada paquete de trabajo del nivel inferior se detalla en el llamado
 diccionario de la EDT, que recoge para cada uno su descripción, el rol
-responsable (sección~\ref{sec:gestion-roles}) y las horas dedicadas. La
+responsable y las horas dedicadas. La
 Tabla~\ref{tab:gestion-edt-diccionario} recoge este diccionario completo,
-ya consolidado con las horas realmente dedicadas al cierre del proyecto
---no solo las previstas en la planificación inicial, ampliadas en varios
+ya consolidado con las horas realmente dedicadas al cierre del proyecto,
+no solo las previstas en la planificación inicial, ampliadas en varios
 paquetes por las causas descritas en la
-sección~\ref{subsec:gestion-revision}--; las horas por rol coinciden,
+sección~\ref{subsec:gestion-revision}; las horas por rol coinciden,
 sumadas, con las horas totales por rol de la
 Tabla~\ref{tab:gestion-costes-personal} de la
 sección~\ref{sec:gestion-presupuesto}.
@@ -283,7 +283,7 @@ sección~\ref{sec:gestion-presupuesto}.
 1.2 & Comprensión del formato del dataset
   & Ingeniero de Visión Artificial & 5\,h \\
 \hline
-1.3 & Análisis de requisitos (capítulo~\ref{cap:analisis}) &
+1.3 & Análisis de requisitos &
   Analista de software & 15\,h \\
 \hline
 2.1 & Implementación de ByteTrack y OC-SORT sobre \texttt{boxmot} &
@@ -299,34 +299,34 @@ sección~\ref{sec:gestion-presupuesto}.
   Ingeniero de Visión Artificial & 10\,h \\
 \hline
 4.1 & Estudio de hiperparámetros de ByteTrack &
-  Ingeniero de Visión Artificial & 15\,h \\
+  Ingeniero de Visión Artificial & 10\,h \\
 \hline
 4.2 & Estudio de hiperparámetros de OC-SORT &
-  Ingeniero de Visión Artificial & 15\,h \\
+  Ingeniero de Visión Artificial & 10\,h \\
 \hline
 5.1 & Clasificación de equipos y mapas de calor (con y sin homografía) &
   Ingeniero de Visión Artificial & 20\,h \\
 \hline
 5.2 & Homografía real (distancia/velocidad) y posesión de balón &
-  Ingeniero de Visión Artificial & 25\,h \\
+  Ingeniero de Visión Artificial & 23\,h \\
 \hline
-6.1 & Desarrollo de la aplicación web & Desarrollador & 40\,h \\
+6.1 & Desarrollo de la aplicación web & Desarrollador & 20\,h \\
 \hline
-6.2 & Ajustes y revisión de la aplicación web (retoques de septiembre) &
+6.2 & Ajustes y revisión de la aplicación web &
   Desarrollador & 15\,h \\
 \hline
-8.1 & Organización del repositorio y corrección de errores &
+7.1 & Organización del repositorio y corrección de errores &
   Desarrollador & 20\,h \\
 \hline
-9.1 & Redacción de la memoria & Jefe de proyecto & 65\,h \\
+8.1 & Redacción de la memoria & Jefe de proyecto & 90\,h \\
 \hline
 \rowcolor{gray!10}
- & \textbf{Total} & & \textbf{320\,h} \\
+ & \textbf{Total} & & \textbf{313\,h} \\
 \hline
 \end{tabular}
 \end{table}
 
-Esta cifra final, superior a las 235\,h estimadas en la planificación
+Esta cifra final, superior a las 300\,h estimadas en la planificación
 inicial (sección~\ref{sec:gestion-planificacion}), no es un error de
 previsión menor sino el reflejo de cómo evolucionó realmente el proyecto:
 la sección~\ref{subsec:gestion-revision} detalla las causas concretas de
@@ -337,16 +337,21 @@ esa desviación de horas.
 
 \subsection{Elaboración del plan de trabajo}
 
-El proyecto se inició a finales de abril de 2026, con una disponibilidad de
-tiempo muy variable a lo largo de los meses siguientes debido al
-solapamiento con la época de exámenes del resto de asignaturas del grado.
-Esta irregularidad, previsible desde el principio dado el calendario
-académico, condicionó la forma de planificar: en lugar de repartir el
-esfuerzo de manera uniforme mes a mes, la planificación inicial asumió
+El proyecto arrancó a finales de febrero de 2026 con una toma de contacto
+muy preliminar con la web de SoccerNet, seguida en marzo de una fase ya
+informal pero más concreta de exploración de las distintas tareas de su
+ecosistema (sección~\ref{sec:gestion-fases}), antes de comprometerse
+formalmente con el tracking como tarea del proyecto a finales de abril. A
+partir de ahí,
+la disponibilidad de tiempo fue muy variable a lo largo de los meses
+siguientes debido al solapamiento con la época de exámenes del resto de
+asignaturas del grado. Esta irregularidad, previsible desde el principio
+dado el calendario académico, condicionó la forma de planificar: en lugar
+de repartir el esfuerzo de manera uniforme mes a mes, la planificación
+inicial --elaborada ya en abril, una vez elegida la tarea-- asumió
 explícitamente periodos de baja dedicación durante los exámenes de mayo y
-concentró el grueso del trabajo en los meses sin solapamiento académico. La
-planificación inicial, elaborada durante las primeras semanas del
-proyecto, fue la siguiente:
+concentró el grueso del trabajo en los meses sin solapamiento académico.
+Esa planificación inicial fue la siguiente:
 
 \begin{itemize}
   \item \textbf{Abril (20--30)} -- Arranque. Exploración de tareas y
@@ -357,7 +362,7 @@ proyecto, fue la siguiente:
   \item \textbf{Mayo} -- Ritmo muy reducido por exámenes (aproximadamente
         20 horas en todo el mes, con prácticamente inactividad entre el 7 y
         el 25). Objetivo: obtener las primeras métricas reales y mantener
-        una reunión de seguimiento con el tutor.
+        un feedback constante de seguimiento con el tutor.
   \item \textbf{Junio} -- Núcleo del proyecto (unas 120 horas estimadas):
         evaluación en test, estudio de hiperparámetros, pipeline de
         metadatos, y comienzo de la redacción de la memoria en paralelo.
@@ -365,9 +370,9 @@ proyecto, fue la siguiente:
         aplicación web y finalización de la memoria.
 \end{itemize}
 
-La estimación total de esta planificación inicial fue de unas 235 horas,
-de las cuales aproximadamente 65 se reservaron como margen para imprevistos
-y tiempo de tutorías, con una fecha de entrega prevista a finales de julio
+La estimación total de esta planificación inicial fue de unas 300 horas,
+que incluían un margen reservado para imprevistos y tiempo de tutorías,
+con una fecha de entrega prevista a finales de julio
 de 2026. La Tabla~\ref{tab:gestion-gantt} representa esta misma
 planificación en forma de cronograma, situando cada fase del proyecto
 (sección~\ref{sec:gestion-fases}) sobre el mes o los meses en que se ha
@@ -376,39 +381,45 @@ descrita en la sección~\ref{subsec:gestion-revision}.
 
 \begin{table}[htp]
 \centering
-\caption{Cronograma real del proyecto por fase y mes. El tono claro
-distingue actividad parcial o de repaso/retoque frente al grueso del
-trabajo de cada fase (tono oscuro).}
+\caption[Cronograma real del proyecto por fase y mes]{Cronograma real
+del proyecto por fase y mes. El tono claro distingue actividad parcial o
+de repaso/retoque frente al grueso del trabajo de cada fase (tono
+oscuro).}
 \label{tab:gestion-gantt}
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|p{3.6cm}|c|c|c|c|c|c|c|}
+\begin{tabular}{|p{3.2cm}|c|c|c|c|c|c|c|c|c|}
 \hline
 \rowcolor{gray!25}
-\textbf{Fase} & \textbf{Abr} & \textbf{May} & \textbf{Jun} & \textbf{Jul} & \textbf{Ago} & \textbf{Sep} & \textbf{Oct} \\
+\textbf{Fase} & \textbf{Feb} & \textbf{Mar} & \textbf{Abr} & \textbf{May} & \textbf{Jun} & \textbf{Jul} & \textbf{Ago} & \textbf{Sep} & \textbf{Oct} \\
 \hline
-1. Exploración inicial & \cellcolor{blue!25}\checkmark & & & & & & \\
+1. Exploración inicial & \cellcolor{blue!10}\checkmark & \cellcolor{blue!25}\checkmark & & & & & & & \\
 \hline
-2. Implementación de trackers & \cellcolor{blue!25}\checkmark & & & & & & \\
+2. Implementación de trackers & & & \cellcolor{blue!25}\checkmark & & & & & & \\
 \hline
-3. Evaluación & \cellcolor{blue!25}\checkmark & \cellcolor{blue!25}\checkmark & & & & & \\
+3. Evaluación & & & \cellcolor{blue!25}\checkmark & \cellcolor{blue!25}\checkmark & & & & & \\
 \hline
-4. Estudio de hiperparámetros & & & \cellcolor{blue!25}\checkmark & & & & \\
+4. Estudio de hiperparámetros & & & & & \cellcolor{blue!25}\checkmark & & & & \\
 \hline
-5. Pipeline de metadatos & & & \cellcolor{blue!25}\checkmark & \cellcolor{blue!25}\checkmark & & & \\
+5. Pipeline de metadatos & & & & & \cellcolor{blue!25}\checkmark & & & & \\
 \hline
-6. Aplicación web & & & & & \cellcolor{blue!25}\checkmark & \cellcolor{blue!10}\checkmark & \\
+6. Aplicación web & & & & & & & \cellcolor{blue!25}\checkmark & \cellcolor{blue!10}\checkmark & \\
 \hline
-7. Redacción de la memoria & & & \cellcolor{blue!10}\checkmark & \cellcolor{blue!10}\checkmark & \cellcolor{blue!25}\checkmark & \cellcolor{blue!25}\checkmark & \cellcolor{blue!10}\checkmark \\
+7. Redacción de la memoria & & & & & \cellcolor{blue!10}\checkmark & \cellcolor{blue!10}\checkmark & \cellcolor{blue!25}\checkmark & \cellcolor{blue!25}\checkmark & \cellcolor{blue!10}\checkmark \\
 \hline
 \end{tabular}
 \end{table}
 
-Como refleja el cronograma, la fase 7 no se concentra limpiamente en un
-único tramo: arranca de forma parcial en junio y julio, se convierte en el
-grueso real del trabajo en agosto y septiembre, y se cierra con una
+Como refleja el cronograma, la fase 1 tampoco se concentra en un único
+mes: arranca con una toma de contacto muy ligera en febrero y se
+convierte en la exploración real, ya concreta, en marzo. La fase 7
+sigue un patrón parecido: arranca de forma parcial en junio y julio, se
+convierte en
+el grueso real del trabajo en agosto y septiembre, y se cierra con una
 revisión final en octubre antes de la entrega. La fase 6 sigue un patrón
-similar a menor escala: desarrollo principal de la aplicación web en
-agosto, con retoques y correcciones puntuales en septiembre
+similar a menor escala: el desarrollo principal de la aplicación web se
+concentra en agosto, con un repaso final en septiembre --organización del
+repositorio y revisión de la interfaz-- ya en paralelo a la recta final
+de la redacción
 (sección~\ref{subsec:impl-web-frontend} del
 capítulo~\ref{cap:implementacion}).
 
@@ -418,27 +429,150 @@ capítulo~\ref{cap:implementacion}).
 \FloatBarrier
 
 El seguimiento del tiempo dedicado a este proyecto se ha apoyado en una
-herramienta de \emph{time-tracking} dedicada (Figura~\ref{fig:gestion-monitorizacion}),
-complementada por el documento de anotaciones descrito en la
-sección~\ref{sec:gestion-metodologia} y por el historial de commits del
-repositorio Git, cuya fecha permite además reconstruir con razonable
-precisión cuándo se completó cada hito (Tabla~\ref{tab:gestion-hitos}). Las
+herramienta de \emph{time-tracking} dedicada, Clockify (Figuras~\ref{fig:gestion-monitorizacion}
+a~\ref{fig:gestion-clockify-sep-p2}), complementada por el documento de
+anotaciones descrito en la sección~\ref{sec:gestion-metodologia} y por el
+historial de commits del repositorio Git, cuya fecha permite además
+reconstruir con razonable precisión cuándo se completó cada hito. Las
 horas totales por paquete de trabajo de la Tabla~\ref{tab:gestion-edt-diccionario}
 y la desviación cuantificada en la sección~\ref{subsec:gestion-revision}
-proceden de esta herramienta.
+proceden de esta herramienta. Para cada mes se muestran, en dos capturas
+sucesivas, el reparto diario de horas junto con la categoría de proyecto
+a la que pertenecen (\emph{Implementación}, \emph{Investigación} o
+\emph{Redacción}), y el desglose completo de las tareas individuales
+registradas con su tiempo dedicado.
 
 \begin{figure}[htp]
 \centering
-\fbox{\begin{minipage}{0.85\textwidth}
-\centering
-\vspace{2.5cm}
-\textbf{[Figura pendiente]}\\[0.3cm]
-Captura de la herramienta de \emph{time-tracking} empleada durante el
-desarrollo del proyecto si es necesario.
-\vspace{2.5cm}
-\end{minipage}}
-\caption{(pendiente de incorporar la captura).}
+\includegraphics[height=0.72\textheight, keepaspectratio]{figures/clockify_02_2026_p1.png}
+\caption{Febrero 2026: apenas 7\,h registradas, una toma de contacto muy
+preliminar con la web de SoccerNet, antes de arrancar con la exploración
+ya concreta de marzo.}
 \label{fig:gestion-monitorizacion}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.92\textwidth, keepaspectratio]{figures/clockify_02_2026_p2.png}
+\caption{Febrero 2026: única tarea registrada en todo el mes.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[height=0.72\textheight, keepaspectratio]{figures/clockify_03_2026_p1.png}
+\caption{Marzo 2026: unas 23\,h registradas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.92\textwidth, keepaspectratio]{figures/clockify_03_2026_p2.png}
+\caption{Marzo 2026: desglose completo de las tareas de exploración
+inicial y el tiempo dedicado a cada una.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[height=0.72\textheight, keepaspectratio]{figures/clockify_04_2026_p1.png}
+\caption{Abril 2026: unas 56\,h registradas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.92\textwidth, keepaspectratio]{figures/clockify_04_2026_p2.png}
+\caption{Abril 2026: desglose completo de tareas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[height=0.72\textheight, keepaspectratio]{figures/clockify_05_2026_p1.png}
+\caption{Mayo 2026: unas 22\,h registradas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.92\textwidth, keepaspectratio]{figures/clockify_05_2026_p2.png}
+\caption{Mayo 2026: desglose completo de las dos tareas de evaluación
+realizadas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[height=0.72\textheight, keepaspectratio]{figures/clockify_06_2026_p1.png}
+\caption{Junio 2026: cerca de 67\,h registradas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.92\textwidth, keepaspectratio]{figures/clockify_06_2026_p2.png}
+\caption{Junio 2026: desglose completo de tareas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[height=0.72\textheight, keepaspectratio]{figures/clockify_07_2026_p1.png}
+\caption{Julio 2026: apenas 5\,h registradas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.92\textwidth, keepaspectratio]{figures/clockify_07_2026_p2.png}
+\caption{Julio 2026: única tarea registrada en todo el mes.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[height=0.72\textheight, keepaspectratio]{figures/clockify_08_2026_p1.png}
+\caption{Agosto 2026: unas 51\,h registradas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.92\textwidth, keepaspectratio]{figures/clockify_08_2026_p2.png}
+\caption{Agosto 2026: desglose completo de tareas.}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[height=0.72\textheight, keepaspectratio]{figures/clockify_09_2026_p1.png}
+\caption{Septiembre 2026: cerca de 80\,h registradas.}
+\label{fig:gestion-clockify-sep}
+\end{figure}
+
+\FloatBarrier
+
+\begin{figure}[htp]
+\centering
+\includegraphics[width=0.92\textwidth, keepaspectratio]{figures/clockify_09_2026_p2.png}
+\caption{Septiembre 2026: desglose completo de tareas.}
+\label{fig:gestion-clockify-sep-p2}
 \end{figure}
 
 \FloatBarrier
@@ -477,18 +611,18 @@ Mayo 2026 & Evaluación repetida sobre el conjunto de test a petición del
 Junio 2026 & Estudio de hiperparámetros de ByteTrack y OC-SORT;
   configuración óptima encontrada para ambos algoritmos. \\
 \hline
-Junio--julio 2026 & Pipeline de metadatos: mapa de calor general,
-  clasificación de equipos por color y mapas de calor por equipo. \\
-\hline
-Julio 2026 & Homografía real sobre tramos de cámara estable (distancia y
-  velocidad); posesión de balón por proximidad. \\
+Junio 2026 & Pipeline de metadatos completo: mapa de calor general,
+  clasificación de equipos por color y mapas de calor por equipo,
+  homografía real sobre tramos de cámara estable (distancia y velocidad)
+  y posesión de balón por proximidad. \\
 \hline
 Agosto 2026 & Revisión de la planificación, traslado de la entrega a la
   convocatoria de octubre; desarrollo de la aplicación web; grueso de la
   redacción sistemática de la memoria. \\
 \hline
-Septiembre 2026 & Ajustes y correcciones sobre la aplicación web;
-  continuación y revisión de la memoria. \\
+Septiembre 2026 & Continuación y grueso final de la redacción de la
+  memoria, junto con la organización final del repositorio y una
+  revisión de la aplicación web. \\
 \hline
 Octubre 2026 & Revisión final de la memoria y entrega. \\
 \hline
@@ -518,8 +652,7 @@ ninguna de ellas aislada, sino acumuladas a lo largo del proyecto:
         previsto}: la planificación inicial contemplaba escribir la
         memoria en paralelo desde junio y cerrarla en julio
         (sección~\ref{sec:gestion-planificacion}). En la práctica, la
-        redacción sistemática --con el nivel de detalle y de contraste
-        contra el código real que exige esta memoria-- no arrancó en
+        redacción sistemática no arrancó en
         serio hasta agosto, y el grueso del trabajo se concentró entre
         julio y agosto, con continuación y revisión en septiembre y una
         última revisión en octubre. La documentación continua de
@@ -527,23 +660,22 @@ ninguna de ellas aislada, sino acumuladas a lo largo del proyecto:
         redactar con este nivel de detalle, ha supuesto por sí misma un
         esfuerzo no contemplado en la planificación inicial.
   \item \textbf{Periodo de exámenes y viajes durante el verano}: además
-        del solapamiento ya previsto con los exámenes de mayo
-        (sección~\ref{sec:gestion-planificacion}), varios periodos de
+        del solapamiento ya previsto con los exámenes de mayo, varios periodos de
         viaje durante el verano redujeron la disponibilidad real de
         tiempo en semanas concretas, sin que se hubiera reservado margen
         explícito para ello en la planificación inicial.
   \item \textbf{Retraso inicial por la exploración de alternativas}: la
         fase de exploración inicial de tareas de SoccerNet
-        (sección~\ref{sec:gestion-fases}) llevó más tiempo del previsto,
+         llevó más tiempo del previsto,
         al valorarse varias alternativas antes de comprometerse con el
         tracking como tarea del proyecto
         (sección~\ref{sec:analisis-decision}).
   \item \textbf{Incidencias con el equipo de desarrollo}: un problema con
         el portátil personal con el que se inició el proyecto obligó a
         migrar a un portátil macOS a mitad del desarrollo, en paralelo al
-        uso ya habitual de un equipo de sobremesa
-        (sección~\ref{sec:gestion-entorno}); recrear el entorno en cada
-        cambio de equipo consumió tiempo no planificado.
+        uso ya habitual de un equipo de sobremesa, y la necesidad de
+        recrear el entorno en cada cambio de equipo consumió tiempo no
+        planificado.
 \end{itemize}
 
 Por este motivo, de acuerdo con el tutor, la entrega del proyecto se ha
@@ -551,9 +683,9 @@ trasladado de la convocatoria de julio a la \textbf{convocatoria de
 octubre de 2026}, lo que ha permitido completar con mayor profundidad tanto
 el pipeline de metadatos como la propia memoria, en lugar de recortar
 alcance para cumplir la fecha original. Como consecuencia directa de estas
-causas, la dedicación real asciende a las \textbf{320\,h} recogidas en el
-diccionario de la EDT (Tabla~\ref{tab:gestion-edt-diccionario}), 85\,h por
-encima de las 235\,h de la planificación inicial. La
+causas, la dedicación real asciende a las \textbf{313\,h} recogidas en el
+diccionario de la EDT (Tabla~\ref{tab:gestion-edt-diccionario}), 13\,h por
+encima de las 300\,h de la planificación inicial. La
 Tabla~\ref{tab:gestion-desviaciones} resume las principales desviaciones
 respecto al plan inicial.
 
@@ -575,14 +707,15 @@ Pipeline de metadatos & Un mapa de calor general & Equipos, heatmaps por
   equipo, homografía (distancia/velocidad) y posesión \\
 \hline
 Redacción de la memoria & En paralelo desde junio, cerrada en julio &
-  Grueso del trabajo entre julio y agosto, continuación en septiembre y
-  revisión final en octubre \\
+  Primeros apuntes en junio, arranque real en julio, grueso del trabajo
+  en agosto y septiembre, y revisión final en octubre \\
 \hline
-Aplicación web & Prevista en julio & Desarrollada en agosto de 2026, con
-  retoques en septiembre, tras completar el pipeline de metadatos y en
+Aplicación web & Prevista en julio & Desarrollo principal en agosto de
+  2026, tras completar el pipeline de metadatos, con un repaso final en
+  septiembre (organización del repositorio y revisión de la interfaz) en
   paralelo a la redacción de los últimos capítulos de esta memoria \\
 \hline
-Horas totales dedicadas & 235\,h (planificación inicial) & 320\,h
+Horas totales dedicadas & 300\,h (planificación inicial) & 313\,h
   (Tabla~\ref{tab:gestion-edt-diccionario}) \\
 \hline
 Fecha de entrega & Convocatoria de julio de 2026 & Convocatoria de
@@ -614,15 +747,13 @@ portátil original obligó, más adelante, a migrar a un portátil macOS,
 usado desde entonces en paralelo al equipo de sobremesa según la
 disponibilidad; recrear el entorno de desarrollo en cada uno de estos
 cambios de equipo (problema P15, sección~\ref{sec:implementacion-entorno})
-consumió tiempo no contemplado en la planificación inicial
-(sección~\ref{subsec:gestion-revision}). Dado que
+consumió tiempo no contemplado en la planificación inicial. Dado que
 los algoritmos de tracking utilizados en este proyecto (ByteTrack, OC-SORT)
 son clásicos y no requieren redes neuronales de gran tamaño en tiempo de
 inferencia, todo el desarrollo se ha realizado sobre CPU sin que ello
 supusiera una limitación relevante; la GPU AMD, al no ser compatible con
 CUDA, se planteó como posible aceleración para líneas de trabajo futuras que
-incorporen re-identificación basada en redes neuronales
-(véase capítulo~\ref{cap:conclusiones}).
+incorporen re-identificación basada en redes neuronales.
 
 \section{Estimación de recursos y presupuesto}
 \label{sec:gestion-presupuesto}
@@ -645,17 +776,17 @@ servicios TIC} \citep{andalucia2020precios}, que fija precios de
 referencia (IVA excluido) para los perfiles profesionales TIC más
 comunes según el acuerdo técnico europeo CWA 16458-1:2018. Como esta
 instrucción no contempla un perfil específico de \emph{ingeniería de
-visión artificial} --una especialización posterior a esa taxonomía--,
+visión artificial},
 se ha usado como equivalente el perfil de \textbf{arquitecto de
 sistemas}, el más próximo por nivel de especialización técnica; el resto
 de roles de este proyecto sí tienen un perfil directamente equivalente
 en la instrucción. La estimación se aplica sobre las horas totales
-realmente dedicadas (320\,h, Tabla~\ref{tab:gestion-edt-diccionario}),
+realmente dedicadas (313\,h, Tabla~\ref{tab:gestion-edt-diccionario}),
 repartidas por rol de acuerdo con el diccionario de la EDT.
 
 \begin{table}[htp]
 \centering
-\caption{Estimación de costes de personal sobre las 320\,h reales dedicadas al proyecto.}
+\caption{Estimación de costes de personal sobre las 313\,h reales dedicadas al proyecto.}
 \label{tab:gestion-costes-personal}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|p{3.6cm}|p{3.4cm}|r|r|r|}
@@ -663,16 +794,16 @@ repartidas por rol de acuerdo con el diccionario de la EDT.
 \rowcolor{gray!25}
 \textbf{Rol} & \textbf{Perfil equivalente (Junta de Andalucía)} & \textbf{Horas} & \textbf{€/h} & \textbf{Coste} \\
 \hline
-Jefe de proyecto & Gestor de proyecto & 65\,h & 44{,}12\,€ & 2\,867{,}80\,€ \\
+Jefe de proyecto & Gestor de proyecto & 90\,h & 44{,}12\,€ & 3\,970{,}80\,€ \\
 \hline
 Analista de software & Analista de negocio & 15\,h & 33{,}17\,€ & 497{,}55\,€ \\
 \hline
-Ingeniero de Visión Artificial & Arquitecto de sistemas & 155\,h & 33{,}45\,€ & 5\,184{,}75\,€ \\
+Ingeniero de Visión Artificial & Arquitecto de sistemas & 143\,h & 33{,}45\,€ & 4\,783{,}35\,€ \\
 \hline
-Desarrollador & Desarrollador & 85\,h & 25{,}67\,€ & 2\,181{,}95\,€ \\
+Desarrollador & Desarrollador & 65\,h & 25{,}67\,€ & 1\,668{,}55\,€ \\
 \hline
 \rowcolor{gray!10}
-\textbf{Total} & & \textbf{320\,h} & & \textbf{10\,732{,}05\,€} \\
+\textbf{Total} & & \textbf{313\,h} & & \textbf{10\,920{,}25\,€} \\
 \hline
 \end{tabular}
 \end{table}
@@ -685,13 +816,13 @@ Tabla~\ref{tab:gestion-costes-operacionales}. La mayoría son recursos sin
 coste directo, por tratarse de equipo ya disponible o de herramientas de
 código abierto; el único coste realmente cuantificable es el consumo
 eléctrico, calculado a partir de una potencia media de consumo de
-150\,W --una cifra intermedia entre el portátil y el equipo de sobremesa
+150\,W, una cifra intermedia entre el portátil y el equipo de sobremesa
 descritos en la sección~\ref{sec:gestion-entorno}, ya que no todas las
-320\,h de dedicación se han realizado con el equipo de mayor consumo-- y
-las 320\,h totales del proyecto (Tabla~\ref{tab:gestion-edt-diccionario}):
-$150\,\mathrm{W} \times 320\,\mathrm{h} = 48\,\mathrm{kWh}$, que al precio
+313\,h de dedicación se han realizado con el equipo de mayor consumo y
+las 313\,h totales del proyecto (Tabla~\ref{tab:gestion-edt-diccionario}):
+$150\,\mathrm{W} \times 313\,\mathrm{h} = 46{,}95\,\mathrm{kWh}$, que al precio
 medio doméstico de la electricidad en España (en torno a 0{,}16\,€/kWh)
-supone un coste estimado de \textbf{7{,}68\,€} a lo largo de todo el
+supone un coste estimado de \textbf{7{,}51\,€} a lo largo de todo el
 proyecto.
 
 \begin{table}[htp]
@@ -715,11 +846,11 @@ Dataset (SoccerNet-Tracking) & 0\,€ (acceso académico gratuito) \\
 Asistentes de inteligencia artificial (Claude Code,
   capítulo~\ref{cap:uso-ia}) & No cuantificado en esta estimación \\
 \hline
-Consumo eléctrico ($150\,\mathrm{W} \times 320\,\mathrm{h} = 48\,\mathrm{kWh}$
-  a 0{,}16\,€/kWh) & 7{,}68\,€ \\
+Consumo eléctrico ($150\,\mathrm{W} \times 313\,\mathrm{h} = 46{,}95\,\mathrm{kWh}$
+  a 0{,}16\,€/kWh) & 7{,}51\,€ \\
 \hline
 \rowcolor{gray!10}
-\textbf{Total cuantificado} & \textbf{7{,}68\,€} \\
+\textbf{Total cuantificado} & \textbf{7{,}51\,€} \\
 \hline
 \end{tabular}
 \end{table}
@@ -734,7 +865,7 @@ infraestructura específica.
 \subsection{Desviación respecto al coste planificado}
 
 Como se describe en la sección~\ref{subsec:gestion-revision}, la dedicación
-real (320\,h) ha superado en 85\,h la planificación inicial de 235\,h,
+real (313\,h) ha superado en 13\,h la planificación inicial de 300\,h,
 principalmente por el mayor alcance del estudio de hiperparámetros y del
 pipeline de metadatos, y por el tiempo dedicado a documentar el proceso
 con el nivel de detalle de esta memoria. A diferencia de lo que ocurriría
@@ -743,18 +874,17 @@ una herramienta de \emph{time-tracking} dedicada
 (sección~\ref{subsec:gestion-monitorizacion}), lo que permite ofrecer una
 cifra de coste real y no solo una desviación cualitativa: aplicando las
 mismas tarifas de la Tabla~\ref{tab:gestion-costes-personal} sobre el
-reparto por rol de las 235\,h de la planificación inicial (30\,h jefe de
-proyecto, 15\,h analista, 130\,h ingeniero de Visión Artificial, 60\,h
-desarrollador) y el mismo criterio de consumo eléctrico sobre esas 235\,h
-($150\,\mathrm{W} \times 235\,\mathrm{h} = 35{,}25\,\mathrm{kWh}$, a
+reparto por rol de las 300\,h de la planificación inicial (40\,h jefe de
+proyecto, 20\,h analista, 165\,h ingeniero de Visión Artificial, 75\,h
+desarrollador) y el mismo criterio de consumo eléctrico sobre esas 300\,h
+($150\,\mathrm{W} \times 300\,\mathrm{h} = 45\,\mathrm{kWh}$, a
 0{,}16\,€/kWh), se obtiene el coste total estimado que recoge la
 Tabla~\ref{tab:gestion-costes-resumen}, comparado con el coste real
 final.
 
 \begin{table}[htp]
 \centering
-\caption{Coste total estimado (planificación inicial, 235\,h) frente a
-coste real (320\,h) y desviación.}
+\caption{Coste total estimado frente a coste real y desviación.}
 \label{tab:gestion-costes-resumen}
 \renewcommand{\arraystretch}{1.3}
 \begin{tabular}{|p{3.6cm}|r|r|r|}
@@ -762,35 +892,37 @@ coste real (320\,h) y desviación.}
 \rowcolor{gray!25}
 \textbf{Concepto} & \textbf{Coste estimado} & \textbf{Coste real} & \textbf{Desviación} \\
 \hline
-Personal (Tabla~\ref{tab:gestion-costes-personal}) & 7\,709{,}85\,€ &
-  10\,732{,}05\,€ & +3\,022{,}20\,€ \\
+Personal (Tabla~\ref{tab:gestion-costes-personal}) & 9\,872{,}70\,€ &
+  10\,920{,}25\,€ & +1\,047{,}55\,€ \\
 \hline
 Consumo eléctrico (Tabla~\ref{tab:gestion-costes-operacionales}) &
-  5{,}64\,€ & 7{,}68\,€ & +2{,}04\,€ \\
+  7{,}20\,€ & 7{,}51\,€ & +0{,}31\,€ \\
 \hline
 \rowcolor{gray!10}
-\textbf{Total} & \textbf{7\,715{,}49\,€} & \textbf{10\,739{,}73\,€} &
-  \textbf{+3\,024{,}24\,€ (+39\,\%)} \\
+\textbf{Total} & \textbf{9\,879{,}90\,€} & \textbf{10\,927{,}76\,€} &
+  \textbf{+1\,047{,}86\,€ (+10{,}6\,\%)} \\
 \hline
 \end{tabular}
 \end{table}
 
-La desviación de coste total, en torno al 39\,\%, es algo mayor que la
-desviación de horas (85\,h sobre 235\,h, un 36\,\%) porque las horas
-añadidas se concentran en los roles de tarifa más alta (jefe de proyecto
-e ingeniero de Visión Artificial); el consumo eléctrico, al ser
-proporcional a las horas totales, se desvía exactamente en esa misma
-proporción (36\,\%) pero su magnitud absoluta es tan pequeña que apenas
-afecta al total. La Tabla~\ref{tab:gestion-desviaciones} documenta el
-resto de desviaciones respecto a la planificación inicial, no solo la de
-coste.
+La desviación de coste total, en torno al 10{,}6\,\%, es mayor que la
+desviación de horas (13\,h sobre 300\,h, un 4{,}3\,\%) porque el exceso
+de horas se concentra casi en su totalidad en el rol de tarifa más alta,
+el jefe de proyecto (90\,h reales frente a 40\,h planificadas), mientras
+que el resto de roles se ha mantenido por debajo de lo previsto; el
+consumo eléctrico, al ser proporcional a las horas totales, se desvía en
+una proporción prácticamente idéntica a la de las horas (4{,}3\,\%) pero
+su magnitud absoluta es tan pequeña que apenas afecta al total. La
+Tabla~\ref{tab:gestion-desviaciones} documenta
+el resto de desviaciones respecto a la planificación inicial, no solo la
+de coste.
 
 \section{Plan de gestión de riesgos}
 \label{sec:gestion-riesgos}
 
 La gestión de riesgos de este proyecto no se ha limitado a una lista
 elaborada una única vez al inicio, sino que se ha
-revisado en cada reunión de seguimiento con el tutor, incorporando riesgos
+revisado en cada feedback de seguimiento con el tutor, incorporando riesgos
 nuevos a medida que se hacían evidentes. Por ejemplo, el riesgo asociado a
 la dependencia de \texttt{boxmot} no era previsible hasta que la propia
 librería cambió de interfaz durante el desarrollo del proyecto. Para
@@ -812,8 +944,7 @@ desarrollo del proyecto.
 \hline
 Disponibilidad de tiempo irregular por exámenes &
   Margen amplio en la planificación inicial (aprox.\ 65\,h de colchón) &
-  Traslado de la entrega a la convocatoria de octubre
-  (sección~\ref{subsec:gestion-revision}) \\
+  Traslado de la entrega a la convocatoria de octubre. \\
 \hline
 Dependencia de \texttt{boxmot}, librería en evolución activa con cambios de
   interfaz entre versiones &
@@ -824,8 +955,7 @@ Dependencia de \texttt{boxmot}, librería en evolución activa con cambios de
 \hline
 Resultados de calibración de cámara no generalizables a todo el dataset &
   Acotar expresamente la homografía real a una prueba de concepto sobre
-  tramos con cámara estable
-  (sección~\ref{sec:implementacion-homografia}) &
+  tramos con cámara estable &
   Documentar la limitación en la memoria en vez de invertir tiempo buscar otras formas. \\
 \hline
 Cambio de equipo de desarrollo a mitad de proyecto (traslado a macOS) &
@@ -839,8 +969,7 @@ Redacción de la memoria más tardía y más costosa de lo previsto &
   desarrollo (sección~\ref{sec:gestion-metodologia}), que evita depender
   de la memoria para no perder el registro de decisiones &
   Traslado de la entrega a la convocatoria de octubre y redacción en
-  paralelo a las últimas iteraciones técnicas
-  (sección~\ref{subsec:gestion-revision}) \\
+  paralelo a las últimas iteraciones técnicas. \\
 \hline
 \end{tabular}
 \end{table}

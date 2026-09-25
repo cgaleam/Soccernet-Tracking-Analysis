@@ -86,16 +86,16 @@ pip install -r requirements.txt
 dependencias, incluyendo \texttt{numpy==2.4.4}, \texttt{boxmot==10.0.43} y
 \texttt{opencv-python==4.13.0.92}
 . Existe una inconsistencia
-conocida y ya documentada: \texttt{trackeval} no aparece listado explícitamente en
+conocida y documentada, \texttt{trackeval} no aparece listado explícitamente en
 \texttt{requirements.txt} aunque el resto del pipeline lo importa
-directamente; si \texttt{pip install -r requirements.txt} no lo instala
-como dependencia transitiva de otro paquete, instalarlo aparte con
+directamente. Si \texttt{pip install -r requirements.txt} no lo instala
+como dependencia de otro paquete, instalarlo aparte con
 \texttt{pip install trackeval}.
 
 \subsection{Descarga del dataset SoccerNet}
 \label{subsec:manual-dataset}
 
-La descarga se automatiza con el SDK oficial de SoccerNet, ya incluido en
+La descarga se realiza con el SDK oficial de SoccerNet, incluido en
 \texttt{requirements.txt}:
 
 \begin{lstlisting}[language=bash]
@@ -104,7 +104,7 @@ python src/utils/soccernet_download.py
 
 Este script descarga los \emph{splits} train, test y challenge de las
 tareas \texttt{tracking} y \texttt{tracking-2023} en una carpeta
-\texttt{SoccerNet/} creada como hermana del repositorio, reproduciendo la estructura
+\texttt{SoccerNet/} creada en paralelo al repositorio, reproduciendo la estructura
 \texttt{SoccerNet/tracking/\{train,test,challenge\}/SNMOT-XXX/} que
 consumen el resto de scripts del proyecto. A diferencia de otras tareas del
 ecosistema SoccerNet que exigen solicitar acceso mediante un formulario
@@ -306,35 +306,81 @@ los ficheros nuevos. El build de producción
 alojamiento estático o servible directamente en local.
 
 \subsection{Uso de la interfaz}
+\label{subsec:manual-uso-interfaz}
 
-La aplicación se organiza en dos pestañas
-(sección~\ref{subsec:diseno-web-ui}). \textbf{Comparativa de algoritmos}
-muestra, sin necesidad de seleccionar nada, la tabla de métricas
-HOTA/HOTA(0)/DetA/AssA/MOTA/IDF1 por \emph{split}, la configuración óptima
-de cada algoritmo y las gráficas del estudio de hiperparámetros.
-\textbf{Explorador de secuencias} requiere elegir una secuencia y un algoritmo mediante los
-selectores de chips; el resto de la pestaña se
-actualiza automáticamente con los datos de esa combinación, mostrando una
-nota de \enquote{no disponible} en los paneles sin datos.
+La aplicación se organiza en dos pestañas,
+pensadas para responder dos preguntas distintas: \enquote{¿qué algoritmo
+rinde mejor en general?} y \enquote{¿qué ha pasado exactamente en esta
+secuencia concreta?}. Las Figuras~\ref{fig:manual-web-comparativa}
+a~\ref{fig:manual-web-118} son capturas reales de la aplicación en
+ejecución sobre el paquete de datos descrito en la
+sección~\ref{subsec:impl-web-bundle}, y se usan a continuación para
+detallar, panel a panel, qué permite consultar cada pestaña.
 
-Las Figuras~\ref{fig:manual-web-comparativa} a~\ref{fig:manual-web-118}
-son capturas reales de la aplicación en ejecución (\texttt{npm run dev})
-sobre el paquete de datos descrito en la
-sección~\ref{subsec:impl-web-bundle}.
+\paragraph{Comparativa de algoritmos.} Esta pestaña
+(Figura~\ref{fig:manual-web-comparativa}) no requiere seleccionar nada:
+muestra directamente, para entrenamiento y test por separado, la tabla de
+métricas de ambos algoritmos, el gráfico de
+barras que contrasta HOTA integrada frente a HOTA(0), la discrepancia
+metodológica central de este proyecto
+(sección~\ref{subsec:impl-hota-vs-hota0}), la tabla con la configuración
+óptima de hiperparámetros de cada algoritmo, y las gráficas del estudio
+de sensibilidad del
+capítulo~\ref{cap:pruebas}.
 
 \begin{figure}[htp]
 \centering
 \includegraphics[height=0.8\textheight, keepaspectratio]{figures/manual_web_comparativa.png}
-\caption{Pestaña \enquote{Comparativa de algoritmos}.}
+\caption[Pestaña \enquote{Comparativa de algoritmos}]{Pestaña
+\enquote{Comparativa de algoritmos}: tabla de métricas por \emph{split},
+gráfico HOTA frente a HOTA(0), configuración óptima de hiperparámetros y
+gráficas de sensibilidad.}
 \label{fig:manual-web-comparativa}
 \end{figure}
+
+\FloatBarrier
+
+\paragraph{Explorador de secuencias: selección y vídeo.} Esta pestaña
+(Figuras~\ref{fig:manual-web-116} a~\ref{fig:manual-web-118}) exige
+elegir primero una secuencia (SNMOT-116/117/118) y un algoritmo
+(ByteTrack u OC-SORT) mediante los selectores de chips de la parte
+superior; el resto de la pestaña se actualiza automáticamente con los
+datos de esa combinación concreta, sin recargar la página. El panel de
+vídeo reproduce el tramo correspondiente con las cajas delimitadoras
+superpuestas, coloreadas por equipo, con el identificador de tracking
+de cada jugador y el balón resaltado en un color distinto mediante los
+controles estándar de un reproductor, lo que permite comprobar visualmente, frame
+a frame si es necesario, la calidad real del tracking sobre el que se
+calcula el resto de metadatos.
+
+\paragraph{Clasificación de equipos y posesión.} Debajo del vídeo, el
+panel de \textbf{equipos} muestra cuántos jugadores se han clasificado y
+el reparto entre Equipo~0 y Equipo~1 para esa combinación concreta, junto con la nota de limitación
+sobre el árbitro. El panel de
+\textbf{posesión}, a su lado, muestra el porcentaje de posesión de cada
+equipo estimado por proximidad al balón.
+
+\paragraph{Mapas de calor y homografía.} El panel de \textbf{mapas de
+calor} permite comparar visualmente la ocupación del campo, tanto
+general como separada por equipo, sobre la misma escala de color. Cuando la secuencia dispone de
+calibración de homografía real,
+un panel adicional de \textbf{homografía} muestra el mapa de calor
+calibrado en metros reales y una tabla con el top-5 de jugadores por
+distancia recorrida, junto con su velocidad media y de pico
+(sección~\ref{subsec:diseno-homografia}). La
+Figura~\ref{fig:manual-web-117} muestra precisamente el caso en que este
+panel no está disponible, con la nota explícita que evita que la
+ausencia de datos se confunda con un error de carga.
 
 \begin{figure}[htp]
 \centering
 \includegraphics[height=0.8\textheight, keepaspectratio]{figures/manual_web_explorador_116.png}
-\caption{Pestaña \enquote{Explorador de secuencias} con SNMOT-116 y ByteTrack.}
+\caption{Pestaña \enquote{Explorador de secuencias} con SNMOT-116 y
+ByteTrack.}
 \label{fig:manual-web-116}
 \end{figure}
+
+\FloatBarrier
 
 \begin{figure}[htp]
 \centering
@@ -342,6 +388,8 @@ sección~\ref{subsec:impl-web-bundle}.
 \caption{SNMOT-117 con ByteTrack.}
 \label{fig:manual-web-117}
 \end{figure}
+
+\FloatBarrier
 
 \begin{figure}[htp]
 \centering

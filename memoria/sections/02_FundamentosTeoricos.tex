@@ -1,18 +1,18 @@
 \chapter{Fundamentos teóricos y estado del arte}
 \label{cap:fundamentos}
 
-Este capítulo presenta, de lo general a lo particular, todos los conceptos
-teóricos necesarios para comprender el resto de este proyecto. Se parte de
+Este capítulo presenta los conceptos
+teóricos necesarios para comprender el resto del proyecto. Se parte de
 las nociones más básicas: qué es la inteligencia artificial, qué es un
-dataset y por qué existe SoccerNet. Y se profundiza progresivamente hasta
-el detalle técnico de cada algoritmo, métrica y técnica empleados: el
+dataset y por qué existe SoccerNet. Y se profundiza progresivamente llegando a
+ cada algoritmo, métrica y técnica empleados: el
 problema del seguimiento multiobjeto, los algoritmos de \emph{tracking-by-detection}
-comparados (ByteTrack y OC-SORT) y los que se consideraron pero no llegaron
-a implementarse, las métricas de evaluación estándar del campo (MOTA, IDF1,
-HOTA), la clasificación de jugadores por color mediante K-means, y los
+comparados y los que se consideraron pero no llegaron
+a implementarse, las métricas de evaluación estándar (MOTA, IDF1,
+HOTA), la clasificación de jugadores por color y los
 fundamentos de la homografía aplicada a la proyección de coordenadas.
-Las decisiones concretas de este proyecto como parámetros, configuración,
-qué resultado se obtuvo no se abordan aquí, sino en los capítulos de
+Las decisiones de este proyecto como parámetros, configuración,
+qué resultado se obtuvo se abordan en los capítulos de
 diseño, implementación y resultados
 (capítulos~\ref{cap:diseno},~\ref{cap:implementacion} y~\ref{cap:pruebas}).
 El capítulo se cierra situando este TFG frente a trabajos relacionados y al
@@ -41,8 +41,7 @@ Dentro del aprendizaje automático, el \textbf{aprendizaje profundo}
 (\emph{deep learning}) es el subconjunto de técnicas basadas en redes
 neuronales artificiales de varias capas, cuyo diseño se inspira de forma
 general en la estructura del cerebro humano, capaces de aprender
-directamente representaciones útiles de los datos en bruto --p.\ ej.,
-píxeles de una imagen-- sin necesidad de que un experto humano diseñe a
+directamente representaciones útiles de los datos en bruto sin necesidad de que un experto humano diseñe a
 mano las características relevantes; es este subcampo el que sostiene hoy
 la mayor parte de los avances más recientes de la IA, desde la visión
 artificial y la IA generativa hasta la conducción autónoma o la robótica
@@ -75,7 +74,7 @@ sección~\ref{sec:fundamentos-mot}.
 automático, aprendizaje profundo y visión por computador. La visión por
 computador se apoya hoy predominantemente en aprendizaje profundo, aunque
 históricamente incluye también técnicas no basadas en redes neuronales
-(p.\ ej., K-means, sección~\ref{sec:fundamentos-kmeans}).}
+(por ejemplo, K-means, sección~\ref{sec:fundamentos-kmeans}).}
 \label{fig:jerarquia-ia}
 \end{figure}
 
@@ -220,7 +219,7 @@ representados en la Figura~\ref{fig:fundamentos-mot-pipeline}:
         es decir, sin saber todavía si el objeto detectado en el frame
         $t$ es el mismo que se detectó en el frame $t-1$. Esta tarea se
         resuelve habitualmente con un detector de objetos entrenado con
-        aprendizaje profundo (p.\ ej., la familia YOLO, discutida en la
+        aprendizaje profundo (por ejemplo, la familia YOLO, discutida en la
         sección~\ref{subsec:fundamentos-balon}).
   \item \textbf{Asociación}: dado el conjunto de detecciones de cada frame,
         decidir qué detección del frame actual corresponde a qué identidad
@@ -247,8 +246,7 @@ representados en la Figura~\ref{fig:fundamentos-mot-pipeline}:
 \node[align=center, font=\footnotesize] at ($(det)!0.5!(asoc) + (0,-1.3)$)
   {Este proyecto se centra únicamente en la asociación.};
 \end{tikzpicture}
-\caption{Las dos etapas de un sistema de MOT: detección y asociación.
-(sección~\ref{sec:intro-problema}).}
+\caption{Las dos etapas de un sistema de MOT: detección y asociación.}
 \label{fig:fundamentos-mot-pipeline}
 \end{figure}
 
@@ -417,7 +415,7 @@ sección~\ref{sec:implementacion-entorno}.
 Un detalle que puede ser importante a la hora de entender ByteTrack en la
 sección~\ref{subsec:fundamentos-bytetrack} es que no toda asignación con
 coste finito se acepta: se suele imponer un umbral mínimo de similitud
-(p.\ ej., IoU mínima) por debajo del cual una predicción y una detección no
+(por ejemplo, IoU mínima) por debajo del cual una predicción y una detección no
 se consideran candidatas a asociarse, aunque el algoritmo húngaro las
 hubiera emparejado matemáticamente. Las predicciones que no encuentran
 ninguna detección compatible se marcan como no observadas en ese frame
@@ -458,8 +456,7 @@ el fútbol, un jugador parcialmente ocluido suele generar una detección de
 confianza más baja (o directamente no generar ninguna), lo que provoca que
 SORT pierda su identidad con más facilidad de la deseable y genere más
 \emph{cambios de identidad} (\emph{ID switches}) de los necesarios. Esta
-limitación es precisamente la que aborda ByteTrack
-(sección~\ref{subsec:fundamentos-bytetrack}).
+limitación es precisamente la que aborda ByteTrack.
 
 En \texttt{boxmot}, la librería usada en este proyecto
 (sección~\ref{sec:implementacion-entorno}), no existe una implementación
@@ -484,7 +481,7 @@ de movimiento, sin ninguna corrección, de modo que el error de la
 predicción crece sin control cuanto más dura la oclusión; al reaparecer el
 objeto, la predicción puede estar ya demasiado lejos de la posición real
 para una asociación correcta. El segundo es la sensibilidad del filtro de
-Kalman a los movimientos no lineales (sección~\ref{sec:fundamentos-mot}),
+Kalman a los movimientos no lineales,
 especialmente marcados en fútbol.
 
 OC-SORT resuelve ambos problemas centrando el filtro en las
@@ -828,8 +825,8 @@ donde $\sim$ indica igualdad salvo un factor de escala, propio de las
 coordenadas homogéneas \citep{opencv2026homography}. La matriz $H$ tiene 8
 grados de libertad (9 elementos menos 1 por el factor de escala libre), por
 lo que puede calcularse de forma exacta a partir de 4 pares de puntos
-correspondientes conocidos --un punto en la imagen y su posición real
-equivalente en el campo-- mediante un sistema de ecuaciones lineales;
+correspondientes conocidos (un punto en la imagen y su posición real
+equivalente en el campo) mediante un sistema de ecuaciones lineales;
 disponer de más de 4 correspondencias permite, además, calcular $H$ por
 mínimos cuadrados y obtener una estimación más robusta frente a errores de
 medición en los puntos de referencia.
@@ -885,28 +882,22 @@ MOT4MOT sobre DeepOCSORT, lo que confirma que ambos algoritmos
 constituyen una base representativa y competitiva del estado del arte
 práctico.
 
-Puesto en perspectiva, el HOTA integrado en test obtenido en este proyecto
+El HOTA integrado en test obtenido en este proyecto
 con OC-SORT (75{,}43), resulta muy próximo al del equipo ganador del
-reto oficial 2023 (75{,}61) pese a partir de una posición menos favorable
+reto oficial 2023 (75{,}61) aunque a partir de una posición menos favorable
 en dos aspectos: sin ningún entrenamiento ni ajuste de detector
 específico para fútbol, y con los algoritmos de tracking en su
 configuración por defecto para esa comparación concreta. No se trata, por
-tanto, de una comparación estrictamente equivalente ni de una pretensión
-de superar el estado del arte del reto, sino de una referencia
+tanto, de una comparación totalmente equivalente ni se trata de un intento
+de superar el estado del arte del reto, es una referencia
 que sitúa los resultados de este TFG en un rango realista y defendible
 frente a soluciones desarrolladas específicamente para competir.
 
-La aportación de este proyecto no busca, en consecuencia, competir por la
-mejor posición en ese \emph{leaderboard}, sino dos objetivos distintos que
-el propio reto no cubre: primero, una comparación controlada y
-metodológicamente rigurosa entre dos algoritmos clásicos de
-\emph{tracking-by-detection} bajo condiciones idénticas: mismas
-detecciones, mismas métricas, mismo estudio sistemático de
-hiperparámetros, que documenta explícitamente una discrepancia
-metodológica entre HOTA y HOTA(0) no discutida en los informes de
-resultados del propio reto; y segundo, la construcción de un pipeline
-completo de extracción de metadatos deportivos interpretables y su
-exposición en una aplicación web, que va
+Este proyecto no busca competir en ese \emph{leaderboard}, sino dos objetivos distintos que
+el reto no cubre: una comparación rigurosa entre dos algoritmos clásicos de
+\emph{tracking-by-detection} bajo las mismas condiciones mi. Y segundo, la construcción de un pipeline
+completo de extracción de metadatos deportivos y la
+exposición des sus resultados en una aplicación web, que va
 más allá de la propia tarea de tracking en la que se detiene el reto
 oficial.
 
