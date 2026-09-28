@@ -21,15 +21,6 @@ Se utiliza el dataset [SoccerNet Tracking](https://www.soccer-net.org/tasks/trac
 > Los datos **no están incluidos** en este repositorio por su tamaño. Consulta `src/descarga_soccernet_tracking.py` para descargarlos.
 ---
 
-## Funcionalidades implementadas
-
-- Reproducción de secuencias de vídeo a partir de frames individuales
-- Visualización de bounding boxes con identificadores únicos por jugador
-- Asignación de color único por jugador para facilitar el seguimiento visual
-- Detección y diferenciación del balón mediante filtrado por área y proporción geométrica
-
----
-
 ## Requisitos
 
 ```bash
